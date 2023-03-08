@@ -15,5 +15,7 @@ namespace NolekAPI.Data
         }
 
         public DbSet<NolekAPI.Model.tblParts> tblParts { get; set; } = default!;
+
+        public DbSet<NolekAPI.Model.tblServices> tblServices { get; set; }
     }
 }
