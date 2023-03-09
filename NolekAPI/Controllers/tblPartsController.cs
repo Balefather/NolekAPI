@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,12 @@ using NolekAPI.Model;
 
 namespace NolekAPI.Controllers
 {
+    [EnableCors("AllowAllOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class tblPartsController : ControllerBase
     {
+
         private readonly NolekAPIContext _context;
 
         public tblPartsController(NolekAPIContext context)
@@ -40,6 +43,12 @@ namespace NolekAPI.Controllers
             }
 
             return tblParts;
+        }
+
+        [HttpGet("Search/{term}")]
+        public async Task<ActionResult<IEnumerable<tblParts>>> Search(string term)
+        {
+            return await _context.tblParts.Where(tblParts => tblParts.PartName.Contains(term)).ToListAsync();
         }
 
         // PUT: api/tblParts/5
@@ -75,6 +84,7 @@ namespace NolekAPI.Controllers
 
         // POST: api/tblParts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [EnableCors("AllowAllOrigins")]
         [HttpPost]
         public async Task<ActionResult<tblParts>> PosttblParts(tblParts tblParts)
         {
