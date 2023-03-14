@@ -12,25 +12,25 @@ namespace NolekAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class tblServicesController : ControllerBase
+    public class ServicesController : ControllerBase
     {
         private readonly NolekAPIContext _context;
 
-        public tblServicesController(NolekAPIContext context)
+        public ServicesController(NolekAPIContext context)
         {
             _context = context;
         }
 
         // GET: api/tblServices
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<tblServices>>> GettblServices()
+        public async Task<ActionResult<IEnumerable<Service>>> GettblServices()
         {
             return await _context.tblServices.ToListAsync();
         }
 
         // GET: api/tblServices/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<tblServices>> GettblServices(int id)
+        public async Task<ActionResult<Service>> GettblServices(int id)
         {
             var tblServices = await _context.tblServices.FindAsync(id);
 
@@ -45,7 +45,7 @@ namespace NolekAPI.Controllers
         // PUT: api/tblServices/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PuttblServices(int id, tblServices tblServices)
+        public async Task<IActionResult> PuttblServices(int id, Service tblServices)
         {
             if (id != tblServices.ServiceID)
             {
@@ -76,7 +76,7 @@ namespace NolekAPI.Controllers
         // POST: api/tblServices
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<tblServices>> PosttblServices(tblServices tblServices)
+        public async Task<ActionResult<Service>> PosttblServices(Service tblServices)
         {
             _context.tblServices.Add(tblServices);
             await _context.SaveChangesAsync();

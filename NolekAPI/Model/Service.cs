@@ -2,7 +2,7 @@
 
 namespace NolekAPI.Model
 {
-    public class tblServices
+    public class Service
     {
         [Key]
         public int ServiceID { get; set; }

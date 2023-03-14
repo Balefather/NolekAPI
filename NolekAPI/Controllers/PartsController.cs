@@ -14,26 +14,26 @@ namespace NolekAPI.Controllers
     [EnableCors("AllowAllOrigins")]
     [Route("api/[controller]")]
     [ApiController]
-    public class tblPartsController : ControllerBase
+    public class PartsController : ControllerBase
     {
 
         private readonly NolekAPIContext _context;
 
-        public tblPartsController(NolekAPIContext context)
+        public PartsController(NolekAPIContext context)
         {
             _context = context;
         }
 
         // GET: api/tblParts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<tblParts>>> GetPart()
+        public async Task<ActionResult<IEnumerable<Part>>> GetPart()
         {
             return await _context.tblParts.ToListAsync();
         }
 
         // GET: api/tblParts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<tblParts>> GettblParts(int id)
+        public async Task<ActionResult<Part>> GettblParts(int id)
         {
             var tblParts = await _context.tblParts.FindAsync(id);
 
@@ -46,7 +46,7 @@ namespace NolekAPI.Controllers
         }
 
         [HttpGet("Search/{term}")]
-        public async Task<ActionResult<IEnumerable<tblParts>>> Search(string term)
+        public async Task<ActionResult<IEnumerable<Part>>> Search(string term)
         {
             return await _context.tblParts.Where(tblParts => tblParts.PartName.Contains(term)).ToListAsync();
         }
@@ -54,7 +54,7 @@ namespace NolekAPI.Controllers
         // PUT: api/tblParts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PuttblParts(int id, tblParts tblParts)
+        public async Task<IActionResult> PuttblParts(int id, Part tblParts)
         {
             if (id != tblParts.PartID)
             {
@@ -86,7 +86,7 @@ namespace NolekAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [EnableCors("AllowAllOrigins")]
         [HttpPost]
-        public async Task<ActionResult<tblParts>> PosttblParts(tblParts tblParts)
+        public async Task<ActionResult<Part>> PosttblParts(Part tblParts)
         {
             _context.tblParts.Add(tblParts);
             await _context.SaveChangesAsync();

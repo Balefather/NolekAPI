@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace NolekAPI.Model
 {
-    public class tblParts
+    public class Part
     {
         [Key]
         public int PartID { get; set; }
