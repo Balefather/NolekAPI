@@ -17,5 +17,9 @@ namespace NolekAPI.Data
         public DbSet<NolekAPI.Model.Part> tblParts { get; set; } = default!;
 
         public DbSet<NolekAPI.Model.Service> tblServices { get; set; }
+
+        public DbSet<NolekAPI.Model.CustomersMachinesParts>? vw_CustomersMachinesParts { get; set; }
+
+        public DbSet<NolekAPI.Model.MachineParts>? vw_MachineParts { get; set; }
     }
 }
