@@ -21,5 +21,13 @@ namespace NolekAPI.Data
         public DbSet<NolekAPI.Model.CustomersMachinesParts>? vw_CustomersMachinesParts { get; set; }
 
         public DbSet<NolekAPI.Model.MachineParts>? vw_MachineParts { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CustomersMachinesParts>().ToView("vw_CustomersMachinesParts");
+            modelBuilder.Entity<CustomersMachinesParts>().HasNoKey().ToView("vw_CustomersMachinesParts");
+            //modelBuilder.Entity<Customer>().ToView("vw_CustomersMachinesParts");
+        }
+
     }
 }
