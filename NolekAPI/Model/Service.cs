@@ -9,10 +9,9 @@ namespace NolekAPI.Model
         public int CustomerID { get; set; }
         public int MachineID { get; set; }
         public DateTime ServiceDate { get; set; }
-        public string PartsUsed { get; set; }
         public int TransportTimeUsed { get; set; }
         public int TransportKmUsed { get; set; }
         public int WorkTimeUsed { get; set; }
-        public string ImagePath { get; set; }
+        public string ServiceImage { get; set; }
     }
 }
