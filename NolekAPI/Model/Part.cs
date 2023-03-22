@@ -4,7 +4,7 @@ namespace NolekAPI.Model
 {
     public class Part
     {
-        [JsonIgnore]
+
         [Key]
         public int PartID { get; set; }
         public string PartName { get; set; }
