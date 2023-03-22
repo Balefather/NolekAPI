@@ -4,7 +4,6 @@ namespace NolekAPI.Model
 {
     public class MachineParts
     {
-        [Key]
         public int MachineID { get; set; }
         public string MachineName { get; set; }
         public int PartID { get; set; }
