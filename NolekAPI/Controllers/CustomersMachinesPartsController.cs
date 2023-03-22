@@ -50,40 +50,6 @@ namespace NolekAPI.Controllers
             }
             List<CustomersMachinesParts> customersMachinesPartsList = await _context.vw_CustomersMachinesParts.ToListAsync();
             List<Customer> customersMachinesParts2List = new List<Customer>();
-            //foreach (var customer in customersMachinesPartsList)
-            //{
-            //    var customer2 = new CustomersMachinesParts2
-            //    {
-            //        CustomerID = customer.CustomerID,
-            //        CustomerName = customer.CustomerName,
-            //        CustomerAddress = customer.CustomerAddress,
-            //        PhoneNumber = customer.PhoneNumber,
-            //        Email = customer.Email,
-            //        Machines = new List<Machine>()
-            //    };
-
-            //    var machines = customersMachinesPartsList.Where(x => x.CustomerID == customer.CustomerID)
-            //                                             .GroupBy(x => new { x.MachineID, x.MachineName, x.PartsMustChange, x.ServiceInterval })
-            //                                             .Select(x => new Machine
-            //                                             {
-            //                                                 MachineID = x.Key.MachineID,
-            //                                                 MachineName = x.Key.MachineName,
-            //                                                 PartsMustChange = x.Key.PartsMustChange,
-            //                                                 ServiceInterval = x.Key.ServiceInterval,
-            //                                                 Part = x.Select(y => new Part
-            //                                                 {
-            //                                                     PartID = y.PartID,
-            //                                                     PartName = y.PartName,
-            //                                                     NumberInStock = y.NumberInStock,
-            //                                                     PartPrice = y.PartPrice
-            //                                                 }).ToList()
-            //                                             }).ToList();
-
-            //    customer2.Machines.AddRange(machines);
-
-            //    customersMachinesParts2List.Add(customer2);
-            //}
-
 
             foreach (var customerGroup in customersMachinesPartsList.GroupBy(x => x.CustomerID))
             {
@@ -93,7 +59,54 @@ namespace NolekAPI.Controllers
                                             .Select(machineGroup =>
                                             {
                                                 var machine = machineGroup.First();
-                                                var parts = machineGroup.Select(x => new Part
+                                                var parts = machineGroup.Select(x => new Part2
+                                                {
+                                                    PartID = x.PartID,
+                                                    PartName = x.PartName,
+                                                    NumberInStock = x.NumberInStock,
+                                                    PartPrice = x.PartPrice,
+                                                    AmountPartMachine = x.AmountPartMachine,
+                                                }).ToList();
+                                                return new Machine
+                                                {
+                                                    MachineID = machine.MachineID,
+                                                    MachineName = machine.MachineName,
+                                                    PartsMustChange = machine.PartsMustChange,
+                                                    ServiceInterval = machine.ServiceInterval,
+                                                    Parts = parts
+                                                };
+                                            }).ToList();
+
+                var customer2 = new Customer
+                {
+                    CustomerID = customer.CustomerID,
+                    CustomerName = customer.CustomerName,
+                    CustomerAddress = customer.CustomerAddress,
+                    PhoneNumber = customer.PhoneNumber,
+                    Email = customer.Email,
+                    Machines = machines
+                };
+
+                customersMachinesParts2List.Add(customer2);
+            }
+            return customersMachinesParts2List;
+        }
+
+        [HttpGet("customers/search/{term}")]
+        public async Task<ActionResult<IEnumerable<Customer>>> Search(string term)
+        {
+            List<CustomersMachinesParts> customersMachinesPartsList = await _context.vw_CustomersMachinesParts.Where(customer => customer.CustomerName.Contains(term)).ToListAsync();
+            List<Customer> customersMachinesParts2List = new List<Customer>();
+
+            foreach (var customerGroup in customersMachinesPartsList.GroupBy(x => x.CustomerID))
+            {
+                var customer = customerGroup.First();
+
+                var machines = customerGroup.GroupBy(x => x.MachineID)
+                                            .Select(machineGroup =>
+                                            {
+                                                var machine = machineGroup.First();
+                                                var parts = machineGroup.Select(x => new Part2
                                                 {
                                                     PartID = x.PartID,
                                                     PartName = x.PartName,
