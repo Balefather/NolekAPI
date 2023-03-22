@@ -35,50 +35,28 @@ namespace NolekAPI.Controllers
 
         // GET: api/MachineParts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MachineParts>> GetMachineParts(int id)
+        public async Task<ActionResult<NolekAPI.Model.Machine>> GetMachineParts(int id)
         {
             if (_context.vw_MachineParts == null)
             {
                 return NotFound();
             }
-            var machineParts = await _context.vw_MachineParts.FindAsync(id);
+            var machineParts = await _context.vw_MachineParts.Where(machine => machine.MachineID == id).ToListAsync(); 
 
             if (machineParts == null)
             {
                 return NotFound();
             }
+            var machinesActionResult = await ToMachines(machineParts);
+            var machines = machinesActionResult.Value;
 
-            return machineParts;
+            return machines.First();
         }
 
         [HttpGet("search/{term}")]
         public async Task<ActionResult<IEnumerable<NolekAPI.Model.Machine>>> Search(string term)
         {
-            List<MachineParts> machinesPartsList = await _context.vw_MachineParts.Where(machine => machine.MachineName.Contains(term)).ToListAsync();
-            List<NolekAPI.Model.Machine> machinesParts2List = new List<NolekAPI.Model.Machine>();
-
-            foreach (var machineGroup in machinesPartsList.GroupBy(x => x.MachineID))
-            {
-                var machine = machineGroup.First();
-                var parts = machineGroup.Select(x => new Part2
-                {
-                    PartID = x.PartID,
-                    PartName = x.PartName,
-                    NumberInStock = x.NumberInStock,
-                    PartPrice = x.PartPrice,
-                    AmountPartMachine = x.AmountPartMachine,
-                }).ToList();
-
-                machinesParts2List.Add(new NolekAPI.Model.Machine
-                {
-                    MachineID = machine.MachineID,
-                    MachineName = machine.MachineName,
-                    //PartsMustChange = machine.PartsMustChange,
-                    //ServiceInterval = machine.ServiceInterval,
-                    Parts = parts
-                });
-            }
-            return machinesParts2List;
+            return await ToMachines(await _context.vw_MachineParts.Where(machine => machine.MachineName.Contains(term)).ToListAsync());
         }
 
         // PUT: api/MachineParts/5
@@ -151,5 +129,61 @@ namespace NolekAPI.Controllers
         {
             return (_context.vw_MachineParts?.Any(e => e.MachineID == id)).GetValueOrDefault();
         }
+
+        private async Task<ActionResult<IEnumerable<NolekAPI.Model.Machine>>> ToMachines(IEnumerable<MachineParts> machinesPartsList)
+        {
+            List<NolekAPI.Model.Machine> machinesParts2List = new List<NolekAPI.Model.Machine>();
+
+            foreach (var machineGroup in machinesPartsList.GroupBy(x => x.MachineID))
+            {
+                var machine = machineGroup.First();
+                var parts = machineGroup.Select(x => new Part2
+                {
+                    PartID = x.PartID,
+                    PartName = x.PartName,
+                    NumberInStock = x.NumberInStock,
+                    PartPrice = x.PartPrice,
+                    AmountPartMachine = x.AmountPartMachine,
+                }).ToList();
+
+                machinesParts2List.Add(new NolekAPI.Model.Machine
+                {
+                    MachineID = machine.MachineID,
+                    MachineName = machine.MachineName,
+                    //PartsMustChange = machine.PartsMustChange,
+                    //ServiceInterval = machine.ServiceInterval,
+                    Parts = parts
+                });
+            }
+            return machinesParts2List;
+        }
+
+        //private async Task<ActionResult<NolekAPI.Model.Machine>> ToMachine(MachineParts machinesPartsList)
+        //{
+        //    List<NolekAPI.Model.Machine> machinesParts2List = new List<NolekAPI.Model.Machine>();
+
+        //    foreach (var machineGroup in machinesPartsList.GroupBy(x => x.MachineID))
+        //    {
+        //        var machine = machineGroup.First();
+        //        var parts = machineGroup.Select(x => new Part2
+        //        {
+        //            PartID = x.PartID,
+        //            PartName = x.PartName,
+        //            NumberInStock = x.NumberInStock,
+        //            PartPrice = x.PartPrice,
+        //            AmountPartMachine = x.AmountPartMachine,
+        //        }).ToList();
+
+        //        machinesParts2List.Add(new NolekAPI.Model.Machine
+        //        {
+        //            MachineID = machine.MachineID,
+        //            MachineName = machine.MachineName,
+        //            //PartsMustChange = machine.PartsMustChange,
+        //            //ServiceInterval = machine.ServiceInterval,
+        //            Parts = parts
+        //        });
+        //    }
+        //    return machinesParts2List;
+        //}
     }
 }
