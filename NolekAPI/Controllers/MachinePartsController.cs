@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +26,10 @@ namespace NolekAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MachineParts>>> GetMachineParts()
         {
-          if (_context.vw_MachineParts == null)
-          {
-              return NotFound();
-          }
+            if (_context.vw_MachineParts == null)
+            {
+                return NotFound();
+            }
             return await _context.vw_MachineParts.ToListAsync();
         }
 
@@ -36,10 +37,10 @@ namespace NolekAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MachineParts>> GetMachineParts(int id)
         {
-          if (_context.vw_MachineParts == null)
-          {
-              return NotFound();
-          }
+            if (_context.vw_MachineParts == null)
+            {
+                return NotFound();
+            }
             var machineParts = await _context.vw_MachineParts.FindAsync(id);
 
             if (machineParts == null)
@@ -48,6 +49,36 @@ namespace NolekAPI.Controllers
             }
 
             return machineParts;
+        }
+
+        [HttpGet("search/{term}")]
+        public async Task<ActionResult<IEnumerable<NolekAPI.Model.Machine>>> Search(string term)
+        {
+            List<MachineParts> machinesPartsList = await _context.vw_MachineParts.Where(machine => machine.MachineName.Contains(term)).ToListAsync();
+            List<NolekAPI.Model.Machine> machinesParts2List = new List<NolekAPI.Model.Machine>();
+
+            foreach (var machineGroup in machinesPartsList.GroupBy(x => x.MachineID))
+            {
+                var machine = machineGroup.First();
+                var parts = machineGroup.Select(x => new Part2
+                {
+                    PartID = x.PartID,
+                    PartName = x.PartName,
+                    NumberInStock = x.NumberInStock,
+                    PartPrice = x.PartPrice,
+                    AmountPartMachine = x.AmountPartMachine,
+                }).ToList();
+
+                machinesParts2List.Add(new NolekAPI.Model.Machine
+                {
+                    MachineID = machine.MachineID,
+                    MachineName = machine.MachineName,
+                    //PartsMustChange = machine.PartsMustChange,
+                    //ServiceInterval = machine.ServiceInterval,
+                    Parts = parts
+                });
+            }
+            return machinesParts2List;
         }
 
         // PUT: api/MachineParts/5
@@ -86,10 +117,10 @@ namespace NolekAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<MachineParts>> PostMachineParts(MachineParts machineParts)
         {
-          if (_context.vw_MachineParts == null)
-          {
-              return Problem("Entity set 'NolekAPIContext.MachineParts'  is null.");
-          }
+            if (_context.vw_MachineParts == null)
+            {
+                return Problem("Entity set 'NolekAPIContext.MachineParts'  is null.");
+            }
             _context.vw_MachineParts.Add(machineParts);
             await _context.SaveChangesAsync();
 
