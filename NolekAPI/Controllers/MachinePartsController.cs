@@ -24,13 +24,13 @@ namespace NolekAPI.Controllers
 
         // GET: api/MachineParts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MachineParts>>> GetMachineParts()
+        public async Task<ActionResult<IEnumerable<NolekAPI.Model.Machine>>> GetMachineParts()
         {
             if (_context.vw_MachineParts == null)
             {
                 return NotFound();
             }
-            return await _context.vw_MachineParts.ToListAsync();
+            return await ToMachines(await _context.vw_MachineParts.ToListAsync());
         }
 
         // GET: api/MachineParts/5
@@ -142,13 +142,12 @@ namespace NolekAPI.Controllers
                     PartID = x.PartID,
                     PartName = x.PartName,
                     NumberInStock = x.NumberInStock,
-                    PartPrice = x.PartPrice,
-                    AmountPartMachine = x.AmountPartMachine,
+                    PartPrice = x.PartPrice
                 }).ToList();
 
                 machinesParts2List.Add(new NolekAPI.Model.Machine
                 {
-                    MachineID = machine.MachineID,
+                    MachineID= machine.MachineID,
                     MachineName = machine.MachineName,
                     //PartsMustChange = machine.PartsMustChange,
                     //ServiceInterval = machine.ServiceInterval,
