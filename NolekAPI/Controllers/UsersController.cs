@@ -156,7 +156,7 @@ namespace NolekAPI.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             if (_context.tblUsers == null)
             {
