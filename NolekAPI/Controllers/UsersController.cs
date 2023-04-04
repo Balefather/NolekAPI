@@ -87,13 +87,13 @@ namespace NolekAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Login([FromBody] User user)
+        public IActionResult Login([FromBody] LoginModel loginModel)
         {
 
-            var userCredentials = _context.tblUsers.FirstOrDefault(uc => uc.Username == user.Username);
+            var userCredentials = _context.tblUsers.FirstOrDefault(uc => uc.Username == loginModel.Username);
             var roleNames = GetRolesByUserId(userCredentials.UserID);
 
-            if (userCredentials == null || userCredentials.Password != user.Password)
+            if (userCredentials == null || userCredentials.Password != loginModel.Password)
             {
                 return Unauthorized();
             }
@@ -104,7 +104,7 @@ namespace NolekAPI.Controllers
 
                 var claims = new List<Claim>
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+                    new Claim(JwtRegisteredClaimNames.Sub, loginModel.Username),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
 
@@ -129,7 +129,9 @@ namespace NolekAPI.Controllers
             }
         }
 
-        private List<String> GetRolesByUserId(int userID)
+        [HttpGet("GetRolesByID")]
+        [Authorize(Roles = "Superadministrator")]
+        public List<String> GetRolesByUserId(int userID)
         {
             List<String> roleNames = new List<String>();
             if (_context.tblUserRoles == null)
