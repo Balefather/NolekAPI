@@ -139,7 +139,7 @@ namespace NolekAPI.Controllers
                 //probably log this failed, somehow.
                 return roleNames;
             }
-            List<UserRoles> userRoles = _context.tblUserRoles.Where(u => u.UserID.Equals(userID)).ToList();
+            List<UserRole> userRoles = _context.tblUserRoles.Where(u => u.UserID.Equals(userID)).ToList();
 
             if (!userRoles.Any())
             {
@@ -152,6 +152,47 @@ namespace NolekAPI.Controllers
                 roleNames.Add(_context.tblRoles.Find(userRole.RoleID).RoleName ?? "No role associated with roleId. This should never happen");
             }
             return roleNames;
+        }
+
+        
+        private async Task<ActionResult<int>> GetRoleIdFromName(string rolename)
+        {
+            if (_context.tblRoles == null)
+            {
+                return NotFound();
+            }
+            var role = await _context.tblRoles.FindAsync(rolename);
+
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            return role.RoleID;
+        }
+
+        // DELETE: api/Users/5
+        [HttpDelete("RemoveRoleFromUser")]
+        [Authorize(Roles = "Superadministrator")]
+        public async Task<IActionResult> RemoveRoleFromUser(string rolename, int userid)
+        {
+
+            var role = await _context.tblRoles.FirstOrDefaultAsync(r => r.RoleName == rolename);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            var userRole = await _context.tblUserRoles.FirstOrDefaultAsync(ur => ur.UserID == userid && ur.RoleID == role.RoleID);
+            if (userRole == null)
+            {
+                return NotFound();
+            }
+
+            _context.tblUserRoles.Remove(userRole);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
 
