@@ -195,6 +195,34 @@ namespace NolekAPI.Controllers
             return Ok();
         }
 
+        // DELETE: api/Users/5
+        [HttpPost("AddRoleToUser")]
+        [Authorize(Roles = "Superadministrator")]
+        public async Task<IActionResult> AddRoleToUser(string rolename, int userid)
+        {
+
+            var role = await _context.tblRoles.FirstOrDefaultAsync(r => r.RoleName == rolename);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            //var userRole = await _context.tblUserRoles.FirstOrDefaultAsync(ur => ur.UserID == userid && ur.RoleID == role.RoleID);
+            //if (userRole == null)
+            //{
+            //    return NotFound();
+            //}
+
+            UserRole userRole = new() { RoleID = role.RoleID, UserID = userid };
+            if (!_context.tblUserRoles.Contains(userRole))
+            {
+                _context.tblUserRoles.Add(userRole);
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
 
 
         // GET: api/Users
@@ -206,6 +234,16 @@ namespace NolekAPI.Controllers
                 return NotFound();
             }
             return await _context.tblUsers.ToListAsync();
+        }
+        // GET: api/Users
+        [HttpGet("Roles")]
+        public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
+        {
+            if (_context.tblRoles == null)
+            {
+                return NotFound();
+            }
+            return await _context.tblRoles.ToListAsync();
         }
 
         // GET: api/Users/5
