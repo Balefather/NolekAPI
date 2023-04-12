@@ -34,17 +34,6 @@ namespace NolekAPI.Controllers
         {
             var tblServices = await _context.tblServices.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
             
-            foreach (var service in tblServices)
-            {
-                if (service.ServiceImage == null)
-                {
-                    service.ServiceImage = "";
-                }
-                if (service.ServiceDate == null)
-                {
-                    service.ServiceDate = "";
-                }
-            }
             if (tblServices == null || tblServices.Count == 0)
             {
                 return NotFound();
