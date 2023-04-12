@@ -15,7 +15,7 @@ namespace NolekAPI.Model
         public int TransportTimeUsed { get; set; }
         public int TransportKmUsed { get; set; }
         public int WorkTimeUsed { get; set; }
-        public string ServiceImage { get; set; }
+        public string ServiceImage { get; set; } = "";
         public string Note { get; set; }
         public string MachineStatus { get; set; }
     }
