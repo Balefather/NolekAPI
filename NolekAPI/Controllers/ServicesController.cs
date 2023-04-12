@@ -157,22 +157,19 @@ namespace NolekAPI.Controllers
         {
             return _context.tblServices.Any(e => e.ServiceID == id);
         }
-    }
-
-    [HttpGet("CalculateInvoice/{serviceID}")]
-    public async Task<IActionResult> CalculateInvoice(int serviceID)
-    {
-        // Call the stored procedure to calculate the invoice for the given service ID
-        var invoice = await _context.InvoiceViewModel
-            .FromSqlRaw("EXECUTE dbo.CalculateInvoice @serviceid",
-                new SqlParameter("@serviceid", serviceID))
-            .FirstOrDefaultAsync();
-
-        if (invoice == null)
+        [HttpGet("CalculateInvoice/{serviceID}")]
+        public async Task<IActionResult> CalculateInvoice(int serviceID)
         {
-            return NotFound();
-        }
+            // Call the stored procedure to calculate the invoice for the given service ID
+            var invoice = await _context.Invoice.FromSqlRaw("EXECUTE dbo.CalculateInvoice @serviceid",
+                new SqlParameter("@serviceid", serviceID)).FirstOrDefaultAsync();
 
-        return Ok(invoice);
+            if (invoice == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(invoice);
+        }
     }
 }
