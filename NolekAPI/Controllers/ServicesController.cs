@@ -32,7 +32,14 @@ namespace NolekAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Service>>> GettblServices()
         {
-            return await _context.tblServices.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
+            var tblServices = await _context.tblServices.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
+
+            if (tblServices == null || tblServices.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return tblServices;
 
         }
 
