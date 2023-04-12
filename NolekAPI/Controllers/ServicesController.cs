@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -103,7 +104,7 @@ namespace NolekAPI.Controllers
 
         // POST: api/tblServices/CreateNewService
         [HttpPost("CreateNewService")]
-        public async Task<ActionResult<Service>> CreateNewService(
+        public async Task<IActionResult> CreateNewService(
             DateTime serviceDate,
             int transportTimeUsed,
             int transportKmUsed,
@@ -116,7 +117,7 @@ namespace NolekAPI.Controllers
             string machineStatus)
         {
             // Call the stored procedure to create a new service
-            var result = await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @ServiceImage, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus",
+                await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @ServiceImage, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus",
                 new SqlParameter("@ServiceDate", serviceDate),
                 new SqlParameter("@TransportTimeUsed", transportTimeUsed),
                 new SqlParameter("@TransportKmUsed", transportKmUsed),
@@ -128,8 +129,7 @@ namespace NolekAPI.Controllers
                 new SqlParameter("@Note", note),
                 new SqlParameter("@MachineStatus", machineStatus)).ToListAsync();
 
-            // Return the newly created service
-            return result.FirstOrDefault();
+            return Ok();
         }
 
         // DELETE: api/tblServices/5
