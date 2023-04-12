@@ -29,12 +29,13 @@ namespace NolekAPI.Data
 
             modelBuilder.Entity<CustomersMachinesParts>().ToView("vw_CustomersMachinesParts");
             modelBuilder.Entity<CustomersMachinesParts>().HasNoKey().ToView("vw_CustomersMachinesParts");
-            modelBuilder.Entity<UserRoles>().HasNoKey().ToView("tblUserRoles");
+            //modelBuilder.Entity<UserRole>().HasNoKey().ToView("tblUserRoles");
+            modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserID, ur.RoleID });
             //modelBuilder.Entity<Customer>().ToView("vw_CustomersMachinesParts");
         }
 
         public DbSet<NolekAPI.Model.User>? tblUsers { get; set; }
-        public DbSet<NolekAPI.Model.UserRoles>? tblUserRoles { get; set; }
+        public DbSet<NolekAPI.Model.UserRole>? tblUserRoles { get; set; }
         public DbSet<NolekAPI.Model.Role>? tblRoles { get; set; }
 
     }
