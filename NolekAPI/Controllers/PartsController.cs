@@ -118,7 +118,7 @@ namespace NolekAPI.Controllers
             try
             {
                 // Call the stored procedure to delete the Part and its relations
-                await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.usp_DeletePartAndRelations @PartID = {0}", id);
+                await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.DeletePart @PartID = {0}", id);
 
                 return NoContent();
             }
