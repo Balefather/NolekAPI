@@ -25,14 +25,14 @@ namespace NolekAPI.Controllers
             _context = context;
         }
 
-        // GET: api/tblParts
+        // GET: api/Parts
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Part>>> GetPart()
         {
             return await _context.tblParts.ToListAsync();
         }
 
-        // GET: api/tblParts/5
+        // GET: api/Parts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Part>> GettblParts(int id)
         {
@@ -52,7 +52,7 @@ namespace NolekAPI.Controllers
             return await _context.tblParts.Where(tblParts => tblParts.PartName.Contains(term)).ToListAsync();
         }
 
-        // PUT: api/tblParts/5
+        // PUT: api/Parts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PuttblParts(int id, Part tblParts)
@@ -83,7 +83,7 @@ namespace NolekAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/tblParts
+        // POST: api/Parts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [EnableCors("AllowAllOrigins")]
         [HttpPost]
@@ -95,21 +95,39 @@ namespace NolekAPI.Controllers
             return CreatedAtAction("GettblParts", new { id = tblParts.PartID }, tblParts);
         }
 
-        // DELETE: api/tblParts/5
+        // DELETE: api/Parts/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeletetblParts(int id)
+        //{
+        //    var tblParts = await _context.tblParts.FindAsync(id);
+        //    if (tblParts == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    _context.tblParts.Remove(tblParts);
+        //    await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
+
+        // DELETE: api/Parts/id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletetblParts(int id)
         {
-            var tblParts = await _context.tblParts.FindAsync(id);
-            if (tblParts == null)
+            try
             {
-                return NotFound();
+                // Call the stored procedure to delete the Part and its relations
+                await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.usp_DeletePartAndRelations @PartID = {0}", id);
+
+                return NoContent();
             }
-
-            _context.tblParts.Remove(tblParts);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
+
 
         private bool tblPartsExists(int id)
         {
