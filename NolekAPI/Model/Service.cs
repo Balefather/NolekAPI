@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NolekAPI.Model
 {
@@ -10,7 +11,8 @@ namespace NolekAPI.Model
         public string CustomerName { get; set; }
         public string MachineName { get; set; }
         public string MachineSerialNumber { get; set; }
-        public int PartsUsed { get; set; }
+
+        public int? PartsUsed { get; set; }
         public string PartName { get; set; }
         public int TransportTimeUsed { get; set; }
         public int TransportKmUsed { get; set; }
