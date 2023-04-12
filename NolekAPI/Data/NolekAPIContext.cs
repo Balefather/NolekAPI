@@ -22,6 +22,8 @@ namespace NolekAPI.Data
 
         public DbSet<NolekAPI.Model.MachineParts>? vw_MachineParts { get; set; }
 
+        public DbSet<Invoice> Invoice { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MachineParts>().ToView("vw_MachineParts");
@@ -32,6 +34,7 @@ namespace NolekAPI.Data
             //modelBuilder.Entity<UserRole>().HasNoKey().ToView("tblUserRoles");
             modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserID, ur.RoleID });
             //modelBuilder.Entity<Customer>().ToView("vw_CustomersMachinesParts");
+            modelBuilder.Entity<Invoice>().HasNoKey().ToView(null);
         }
 
         public DbSet<NolekAPI.Model.User>? tblUsers { get; set; }
