@@ -114,10 +114,13 @@ namespace NolekAPI.Controllers
             int customerID,
             string machineSerialNumber,
             string note,
-            string machineStatus)
+            string machineStatus,
+            int partId,
+            int partsUsed
+            )
         {
             // Call the stored procedure to create a new service
-                await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @ServiceImage, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus",
+                await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @ServiceImage, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus, @PartID, @PartsUsed",
                 new SqlParameter("@ServiceDate", serviceDate),
                 new SqlParameter("@TransportTimeUsed", transportTimeUsed),
                 new SqlParameter("@TransportKmUsed", transportKmUsed),
@@ -127,7 +130,9 @@ namespace NolekAPI.Controllers
                 new SqlParameter("@CustomerID", customerID),
                 new SqlParameter("@MachineSerialNumber", machineSerialNumber),
                 new SqlParameter("@Note", note),
-                new SqlParameter("@MachineStatus", machineStatus)).ToListAsync();
+                new SqlParameter("@MachineStatus", machineStatus),
+                new SqlParameter("@PartID", partId),
+                new SqlParameter("@PartsUsed", partsUsed)).ToListAsync();
 
             return Ok();
         }
