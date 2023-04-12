@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NolekAPI.Data;
 using NolekAPI.Model;
@@ -33,7 +34,7 @@ namespace NolekAPI.Controllers
         public async Task<ActionResult<IEnumerable<Service>>> GettblServices()
         {
             var tblServices = await _context.tblServices.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
-            
+
             if (tblServices == null || tblServices.Count == 0)
             {
                 return NotFound();
@@ -91,13 +92,44 @@ namespace NolekAPI.Controllers
 
         // POST: api/tblServices
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Service>> PosttblServices(Service tblServices)
-        {
-            _context.tblServices.Add(tblServices);
-            await _context.SaveChangesAsync();
+        //[HttpPost]
+        //public async Task<ActionResult<Service>> PosttblServices(Service tblServices)
+        //{
+        //    _context.tblServices.Add(tblServices);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GettblServices", new { id = tblServices.ServiceID }, tblServices);
+        //    return CreatedAtAction("GettblServices", new { id = tblServices.ServiceID }, tblServices);
+        //}
+
+        // POST: api/tblServices/CreateNewService
+        [HttpPost("CreateNewService")]
+        public async Task<ActionResult<Service>> CreateNewService(
+            DateTime serviceDate,
+            int transportTimeUsed,
+            int transportKmUsed,
+            int workTimeUsed,
+            string serviceImage,
+            int machineID,
+            int customerID,
+            string machineSerialNumber,
+            string note,
+            string machineStatus)
+        {
+            // Call the stored procedure to create a new service
+            var result = await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @ServiceImage, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus",
+                new SqlParameter("@ServiceDate", serviceDate),
+                new SqlParameter("@TransportTimeUsed", transportTimeUsed),
+                new SqlParameter("@TransportKmUsed", transportKmUsed),
+                new SqlParameter("@WorkTimeUsed", workTimeUsed),
+                new SqlParameter("@ServiceImage", serviceImage),
+                new SqlParameter("@MachineID", machineID),
+                new SqlParameter("@CustomerID", customerID),
+                new SqlParameter("@MachineSerialNumber", machineSerialNumber),
+                new SqlParameter("@Note", note),
+                new SqlParameter("@MachineStatus", machineStatus)).ToListAsync();
+
+            // Return the newly created service
+            return result.FirstOrDefault();
         }
 
         // DELETE: api/tblServices/5
