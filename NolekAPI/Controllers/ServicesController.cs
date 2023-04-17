@@ -45,6 +45,21 @@ namespace NolekAPI.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Service>>> GetServicesByDate()
+        {
+            var tblServices = await _context.tblServices.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
+            var customers = await _context.vw_CustomersMachinesParts.ToListAsync(); ;
+
+            if (tblServices == null || tblServices.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return tblServices;
+
+        }
+
 
         // GET: api/tblServices/5
         [HttpGet("{id}")]
@@ -105,7 +120,6 @@ namespace NolekAPI.Controllers
         // POST: api/tblServices/CreateNewService
         [HttpPost("CreateNewService")]
         public async Task<IActionResult> CreateNewService(
-            DateTime serviceDate,
             int transportTimeUsed,
             int transportKmUsed,
             int workTimeUsed,
@@ -119,6 +133,7 @@ namespace NolekAPI.Controllers
             int partsUsed
             )
         {
+            DateTime serviceDate = DateTime.UtcNow;
             // Call the stored procedure to create a new service
                 await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @ServiceImage, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus, @PartID, @PartsUsed",
                 new SqlParameter("@ServiceDate", serviceDate),
