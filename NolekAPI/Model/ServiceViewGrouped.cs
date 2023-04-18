@@ -11,6 +11,7 @@ namespace NolekAPI.Model
         public string MachineName { get; set; }
         public string MachineSerialNumber { get; set; }
         public List<ServicePart2> Parts { get; set; }
+        public List<Image> Images { get; set; }
         public int TransportTimeUsed { get; set; }
         public int TransportKmUsed { get; set; }
         public int WorkTimeUsed { get; set; }

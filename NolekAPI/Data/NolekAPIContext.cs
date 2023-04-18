@@ -29,9 +29,11 @@ namespace NolekAPI.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ServiceView>().ToView("vw_Services");
+            modelBuilder.Entity<ServiceView>().HasNoKey().ToView("vw_Services");
 
             modelBuilder.Entity<MachineParts>().ToView("vw_MachineParts");
             modelBuilder.Entity<MachineParts>().HasNoKey().ToView("vw_MachineParts");
+
 
             modelBuilder.Entity<CustomersMachinesParts>().ToView("vw_CustomersMachinesParts");
             modelBuilder.Entity<CustomersMachinesParts>().HasNoKey().ToView("vw_CustomersMachinesParts");

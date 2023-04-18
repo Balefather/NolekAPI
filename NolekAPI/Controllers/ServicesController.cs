@@ -35,7 +35,8 @@ namespace NolekAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ServiceViewGrouped>>> GettblServices()
         {
-            var tblServices = await _context.vw_Services.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
+            //var tblServices = await _context.vw_Services.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
+            var tblServices = await _context.vw_Services.ToListAsync();
 
             if (tblServices == null || tblServices.Count == 0)
             {
@@ -55,10 +56,15 @@ namespace NolekAPI.Controllers
                 var service = serviceGroup.First();
                 var parts = serviceGroup.Select(x => new ServicePart2
                 {
-                    PartID = x.PartID ?? 0,
+                    PartID = x.PartID,
                     PartName = x.PartName ?? "",
-                    PartsUsed = x.PartsUsed ?? 0
-                }).ToList();
+                    PartsUsed = x.PartsUsed
+                }).Distinct<ServicePart2>().ToList();
+
+                var images = serviceGroup.Select(y => new Image
+                {
+                    ImagePath = y.ImagePath
+                }).Distinct<Image>().ToList();
 
                 groupServices.Add(new NolekAPI.Model.ServiceViewGrouped
                 {
@@ -70,10 +76,10 @@ namespace NolekAPI.Controllers
                     TransportTimeUsed = service.TransportTimeUsed,
                     TransportKmUsed = service.TransportKmUsed,
                     WorkTimeUsed = service.WorkTimeUsed,
-                    ImagePath = service.ImagePath,
                     Note = service.Note,
                     MachineStatus = service.MachineStatus,
-                    Parts = parts
+                    Parts = parts,
+                    Images = images
                 }) ;
             }
             return groupServices;
