@@ -137,10 +137,13 @@ namespace NolekAPI.Controllers
                 new SqlParameter("@PartID", service.ServiceParts[0].PartID),
                 new SqlParameter("@PartsUsed", service.ServiceParts[0].PartsUsed)).ToListAsync();
 
+            Service createdService = (Service)(CreatedAtAction("CreateNewService", new { id = service.ServiceID }, service)).Value; ;
+
             foreach (var servicePart in service.ServiceParts)
             {
                 if (!_context.tblServices_Parts.Contains<ServicePart>(servicePart))
                 {
+                    servicePart.ServiceID = createdService.ServiceID;
                     _context.tblServices_Parts.Add(servicePart);
                 }
                 await _context.SaveChangesAsync();
