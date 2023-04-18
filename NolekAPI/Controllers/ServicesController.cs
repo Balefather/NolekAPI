@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +33,7 @@ namespace NolekAPI.Controllers
 
         // GET: api/Services
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ServiceView>>> GettblServices()
+        public async Task<ActionResult<IEnumerable<ServiceViewGrouped>>> GettblServices()
         {
             var tblServices = await _context.vw_Services.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
 
@@ -40,10 +41,44 @@ namespace NolekAPI.Controllers
             {
                 return NotFound();
             }
-
-            return tblServices;
+            var groupServices = await FromServiceViewToService(tblServices);
+            return groupServices;
 
         }
+
+        private async Task<ActionResult<IEnumerable<ServiceViewGrouped>>> FromServiceViewToService(IEnumerable<ServiceView> serviceViewList)
+        {
+            List<NolekAPI.Model.ServiceViewGrouped> groupServices = new List<NolekAPI.Model.ServiceViewGrouped>();
+
+            foreach (var serviceGroup in serviceViewList.GroupBy(x => x.ServiceID))
+            {
+                var service = serviceGroup.First();
+                var parts = serviceGroup.Select(x => new ServicePart2
+                {
+                    PartID = x.PartID ?? 0,
+                    PartName = x.PartName ?? "",
+                    PartsUsed = x.PartsUsed ?? 0
+                }).ToList();
+
+                groupServices.Add(new NolekAPI.Model.ServiceViewGrouped
+                {
+                    ServiceID = service.ServiceID,
+                    ServiceDate = service.ServiceDate,
+                    CustomerName = service.CustomerName,
+                    MachineName = service.MachineName,
+                    MachineSerialNumber = service.MachineSerialNumber,
+                    TransportTimeUsed = service.TransportTimeUsed,
+                    TransportKmUsed = service.TransportKmUsed,
+                    WorkTimeUsed = service.WorkTimeUsed,
+                    ImagePath = service.ImagePath,
+                    Note = service.Note,
+                    MachineStatus = service.MachineStatus,
+                    Parts = parts
+                }) ;
+            }
+            return groupServices;
+        }
+
 
         [HttpGet("ByDate")]
         public async Task<ActionResult<IEnumerable<ServiceView>>> GetServicesByDate()
@@ -71,7 +106,6 @@ namespace NolekAPI.Controllers
             {
                 return NotFound();
             }
-
             return tblServices;
         }
 

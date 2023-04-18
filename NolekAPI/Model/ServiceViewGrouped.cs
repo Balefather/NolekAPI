@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 namespace NolekAPI.Model
 {
-    public class ServiceView
+    public class ServiceViewGrouped
     {
         [Key]
         public int ServiceID { get; set; }
@@ -10,9 +10,7 @@ namespace NolekAPI.Model
         public string CustomerName { get; set; }
         public string MachineName { get; set; }
         public string MachineSerialNumber { get; set; }
-        public int? PartsUsed { get; set; }
-        public int? PartID { get; set; }
-        public string? PartName { get; set; }
+        public List<ServicePart2> Parts { get; set; }
         public int TransportTimeUsed { get; set; }
         public int TransportKmUsed { get; set; }
         public int WorkTimeUsed { get; set; }
