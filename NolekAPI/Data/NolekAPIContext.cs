@@ -17,15 +17,19 @@ namespace NolekAPI.Data
         public DbSet<NolekAPI.Model.Part> tblParts { get; set; } = default!;
 
         public DbSet<NolekAPI.Model.Service> tblServices { get; set; }
-
+        public DbSet<ServiceView> vw_Services { get; set; }
         public DbSet<NolekAPI.Model.CustomersMachinesParts>? vw_CustomersMachinesParts { get; set; }
 
         public DbSet<NolekAPI.Model.MachineParts>? vw_MachineParts { get; set; }
+
+        public DbSet<NolekAPI.Model.ServicePart>? tblServices_Parts { get; set; }
 
         public DbSet<Invoice> Invoice { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ServiceView>().ToView("vw_Services");
+
             modelBuilder.Entity<MachineParts>().ToView("vw_MachineParts");
             modelBuilder.Entity<MachineParts>().HasNoKey().ToView("vw_MachineParts");
 
@@ -33,6 +37,7 @@ namespace NolekAPI.Data
             modelBuilder.Entity<CustomersMachinesParts>().HasNoKey().ToView("vw_CustomersMachinesParts");
             //modelBuilder.Entity<UserRole>().HasNoKey().ToView("tblUserRoles");
             modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserID, ur.RoleID });
+            modelBuilder.Entity<ServicePart>().HasKey(sp => new { sp.PartID, sp.ServiceID });
             //modelBuilder.Entity<Customer>().ToView("vw_CustomersMachinesParts");
             modelBuilder.Entity<Invoice>().HasNoKey().ToView(null);
         }

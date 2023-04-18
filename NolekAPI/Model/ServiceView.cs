@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-
 namespace NolekAPI.Model
 {
-    public class Service
+    public class ServiceView
     {
         [Key]
         public int ServiceID { get; set; }
         public DateTime ServiceDate { get; set; }
-        public int CustomerID { get; set; }
-        public int MachineID { get; set; }
+        public string CustomerName { get; set; }
+        public string MachineName { get; set; }
         public string MachineSerialNumber { get; set; }
-        public List<ServicePart> ServiceParts { get; set; }
+        public int PartsUsed { get; set; }
+        public string PartName { get; set; }
 
         public int TransportTimeUsed { get; set; }
         public int TransportKmUsed { get; set; }
@@ -20,5 +20,4 @@ namespace NolekAPI.Model
         public string Note { get; set; }
         public string MachineStatus { get; set; }
     }
-    
 }

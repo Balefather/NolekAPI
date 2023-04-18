@@ -32,9 +32,9 @@ namespace NolekAPI.Controllers
 
         // GET: api/Services
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Service>>> GettblServices()
+        public async Task<ActionResult<IEnumerable<ServiceView>>> GettblServices()
         {
-            var tblServices = await _context.tblServices.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
+            var tblServices = await _context.vw_Services.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
 
             if (tblServices == null || tblServices.Count == 0)
             {
@@ -45,11 +45,11 @@ namespace NolekAPI.Controllers
 
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Service>>> GetServicesByDate()
+        [HttpGet("ByDate")]
+        public async Task<ActionResult<IEnumerable<ServiceView>>> GetServicesByDate()
         {
-            var tblServices = await _context.tblServices.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
-            var customers = await _context.vw_CustomersMachinesParts.ToListAsync(); ;
+            var tblServices = await _context.vw_Services.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
+            var customers = await _context.vw_CustomersMachinesParts.ToListAsync();
 
             if (tblServices == null || tblServices.Count == 0)
             {
@@ -119,35 +119,33 @@ namespace NolekAPI.Controllers
 
         // POST: api/tblServices/CreateNewService
         [HttpPost("CreateNewService")]
-        public async Task<IActionResult> CreateNewService(
-            int transportTimeUsed,
-            int transportKmUsed,
-            int workTimeUsed,
-            string serviceImage,
-            int machineID,
-            int customerID,
-            string machineSerialNumber,
-            string note,
-            string machineStatus,
-            int partId,
-            int partsUsed
-            )
+        public async Task<IActionResult> CreateNewService(Service service)
         {
             DateTime serviceDate = DateTime.UtcNow;
             // Call the stored procedure to create a new service
                 await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @ServiceImage, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus, @PartID, @PartsUsed",
                 new SqlParameter("@ServiceDate", serviceDate),
-                new SqlParameter("@TransportTimeUsed", transportTimeUsed),
-                new SqlParameter("@TransportKmUsed", transportKmUsed),
-                new SqlParameter("@WorkTimeUsed", workTimeUsed),
-                new SqlParameter("@ServiceImage", serviceImage),
-                new SqlParameter("@MachineID", machineID),
-                new SqlParameter("@CustomerID", customerID),
-                new SqlParameter("@MachineSerialNumber", machineSerialNumber),
-                new SqlParameter("@Note", note),
-                new SqlParameter("@MachineStatus", machineStatus),
-                new SqlParameter("@PartID", partId),
-                new SqlParameter("@PartsUsed", partsUsed)).ToListAsync();
+                new SqlParameter("@TransportTimeUsed", service.TransportTimeUsed),
+                new SqlParameter("@TransportKmUsed", service.TransportKmUsed),
+                new SqlParameter("@WorkTimeUsed", service.WorkTimeUsed),
+                new SqlParameter("@ServiceImage", service.ServiceImage),
+                new SqlParameter("@MachineID", service.MachineID),
+                new SqlParameter("@CustomerID", service.CustomerID),
+                new SqlParameter("@MachineSerialNumber", service.MachineSerialNumber),
+                new SqlParameter("@Note", service.Note),
+                new SqlParameter("@MachineStatus", service.MachineStatus),
+                new SqlParameter("@PartID", service.ServiceParts[0].PartID),
+                new SqlParameter("@PartsUsed", service.ServiceParts[0].PartsUsed)).ToListAsync();
+
+            foreach (var servicePart in service.ServiceParts)
+            {
+                if (!_context.tblServices_Parts.Contains<ServicePart>(servicePart))
+                {
+                    _context.tblServices_Parts.Add(servicePart);
+                }
+                await _context.SaveChangesAsync();
+            }
+
 
             return Ok();
         }
