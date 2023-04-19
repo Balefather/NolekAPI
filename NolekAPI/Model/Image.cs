@@ -2,6 +2,7 @@
 {
     public class Image
     {
+        public int ImageID { get; set; }
         public string ImagePath { get; set; }
 
         public override bool Equals(object obj)
