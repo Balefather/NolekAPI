@@ -20,7 +20,10 @@
             unchecked
             {
                 int hash = 17;
-                hash = hash * 23 + ImagePath.GetHashCode();
+                if (ImagePath != null)
+                {
+                    hash = hash * 23 + ImagePath.GetHashCode();
+                }
                 return hash;
             }
         }
