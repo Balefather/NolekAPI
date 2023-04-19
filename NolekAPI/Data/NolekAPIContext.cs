@@ -40,7 +40,7 @@ namespace NolekAPI.Data
             //modelBuilder.Entity<UserRole>().HasNoKey().ToView("tblUserRoles");
             modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserID, ur.RoleID });
             modelBuilder.Entity<ServicePart>().HasKey(sp => new { sp.PartID, sp.ServiceID });
-            modelBuilder.Entity<Service>().HasKey(sp => new { sp.ServiceID });
+            //modelBuilder.Entity<Service>().HasKey(sp => new { sp.ServiceID });
             //modelBuilder.Entity<Customer>().ToView("vw_CustomersMachinesParts");
             modelBuilder.Entity<Invoice>().HasNoKey().ToView(null);
         }
