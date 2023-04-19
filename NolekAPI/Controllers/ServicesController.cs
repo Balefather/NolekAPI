@@ -162,33 +162,42 @@ namespace NolekAPI.Controllers
         public async Task<IActionResult> CreateNewService(Service service)
         {
             DateTime serviceDate = DateTime.UtcNow;
-            // Call the stored procedure to create a new service and get the ServiceID
-            var serviceId = await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus, @PartID, @PartsUsed",
-                new SqlParameter("@ServiceDate", serviceDate),
-                new SqlParameter("@TransportTimeUsed", service.TransportTimeUsed),
-                new SqlParameter("@TransportKmUsed", service.TransportKmUsed),
-                new SqlParameter("@WorkTimeUsed", service.WorkTimeUsed),
-                new SqlParameter("@MachineID", service.MachineID),
-                new SqlParameter("@CustomerID", service.CustomerID),
-                new SqlParameter("@MachineSerialNumber", service.MachineSerialNumber),
-                new SqlParameter("@Note", service.Note),
-                new SqlParameter("@MachineStatus", service.MachineStatus),
-                new SqlParameter("@PartID", service.ServiceParts[0].PartID),
-                new SqlParameter("@PartsUsed", service.ServiceParts[0].PartsUsed))
-                .Select(x => x.ServiceID)
-                .FirstOrDefaultAsync();
+            // Call the stored procedure to create a new service
+            //await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus, @PartID, @PartsUsed",
+            //new SqlParameter("@ServiceDate", serviceDate),
+            //new SqlParameter("@TransportTimeUsed", service.TransportTimeUsed),
+            //new SqlParameter("@TransportKmUsed", service.TransportKmUsed),
+            //new SqlParameter("@WorkTimeUsed", service.WorkTimeUsed),
+            //new SqlParameter("@MachineID", service.MachineID),
+            //new SqlParameter("@CustomerID", service.CustomerID),
+            //new SqlParameter("@MachineSerialNumber", service.MachineSerialNumber),
+            //new SqlParameter("@Note", service.Note),
+            //new SqlParameter("@MachineStatus", service.MachineStatus),
+            //new SqlParameter("@PartID", service.ServiceParts[0].PartID),
+            //new SqlParameter("@PartsUsed", service.ServiceParts[0].PartsUsed)).ToListAsync();
 
-            // Create a new Service object with the returned ServiceID
-            var createdService = new Service { ServiceID = serviceId };
+            service.ServiceDate = serviceDate;
+            _context.tblServices.Add(service);
+            await _context.SaveChangesAsync();
 
-            foreach (var servicePart in service.ServiceParts)
+            ObjectResult createdServiceResult = CreatedAtAction("CreateNewService", new { id = service.ServiceID }, service);
+            Service createdService = (Service)createdServiceResult.Value;
+
+            if (createdService != null)
             {
-                servicePart.ServiceID = createdService.ServiceID;
-                _context.tblServices_Parts.Add(servicePart);
-                await _context.SaveChangesAsync();
+                foreach (var servicePart in service.ServiceParts)
+                {
+                    servicePart.ServiceID = createdService.ServiceID;
+                    _context.tblServices_Parts.Add(servicePart);
+                    await _context.SaveChangesAsync();
+                }
             }
 
-            return CreatedAtAction(nameof(CreateNewService), new { id = createdService.ServiceID }, createdService.ServiceID);
+            if (createdServiceResult != null)
+            {
+                return Ok();
+            }
+            return NotFound();
         }
 
         // DELETE: api/tblServices/5
