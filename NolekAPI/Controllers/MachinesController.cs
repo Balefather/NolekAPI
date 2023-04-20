@@ -27,7 +27,7 @@ namespace NolekAPI.Controllers
 
         // GET: api/MachineParts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NolekAPI.Model.Machine>>> GetMachineParts()
+        public async Task<ActionResult<IEnumerable<NolekAPI.Model.Machine>>> GetMachines()
         {
             if (_context.vw_MachineParts == null)
             {
@@ -189,8 +189,8 @@ namespace NolekAPI.Controllers
                 {
                     MachineID= machine.MachineID,
                     MachineName = machine.MachineName,
-                    //PartsMustChange = machine.PartsMustChange,
-                    //ServiceInterval = machine.ServiceInterval,
+                    PartsMustChange = machine.PartsMustChange,
+                    ServiceInterval = machine.ServiceInterval,
                     Parts = parts
                 });
             }

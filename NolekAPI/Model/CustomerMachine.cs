@@ -6,6 +6,7 @@ namespace NolekAPI.Model
     {
         //Represents a specific machine as seen in the frontend
         public int CustomerID { get; set; }
+        public DateTime NextService { get; set; }
         public string MachineSerialNumber { get; set; }
     }
 }
