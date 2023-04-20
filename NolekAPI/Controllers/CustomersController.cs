@@ -25,23 +25,23 @@ namespace NolekAPI.Controllers
         }
 
         // GET: api/CustomersMachinesParts
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomersMachinesParts>>> GetCustomersMachinesParts()
-        {
-            //if (_context.vw_CustomersMachinesParts == null)
-            //{
-            //    return NotFound();
-            //}
-            //  return await _context.vw_CustomersMachinesParts.ToListAsync();
-            using (_context)
-            {
-                var query = @"SELECT * FROM vw_CustomersMachinesParts";
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<CustomersMachinesParts>>> GetCustomersMachinesParts()
+        //{
+        //    //if (_context.vw_CustomersMachinesParts == null)
+        //    //{
+        //    //    return NotFound();
+        //    //}
+        //    //  return await _context.vw_CustomersMachinesParts.ToListAsync();
+        //    using (_context)
+        //    {
+        //        var query = @"SELECT * FROM vw_CustomersMachinesParts";
 
-                return  _context.vw_CustomersMachinesParts.FromSqlRaw(query).ToList();
+        //        return  _context.vw_CustomersMachinesParts.FromSqlRaw(query).ToList();
 
-            }
-        }
-        [Route("Customers")]
+        //    }
+        //}
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
@@ -52,9 +52,8 @@ namespace NolekAPI.Controllers
             return await ToCustomers(await _context.vw_CustomersMachinesParts.ToListAsync());
         }
 
-        [Route("CustomerByID")]
-        [HttpGet]
-        public async Task<ActionResult<Customer>> GetCustomerByID(int ID)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Customer>> GetCustomerByID(int id)
         {
             // This is retarded
             //if (_context.vw_CustomersMachinesParts == null)
@@ -69,7 +68,7 @@ namespace NolekAPI.Controllers
             //IEnumerable<Customer> peepee = ToCustomers(listWithOneObjectLmao).Result.Value;
             //return peepee.First();
 
-            return (await GetCustomers()).Value.FirstOrDefault(x => x.CustomerID == ID);
+            return (await GetCustomers()).Value.FirstOrDefault(x => x.CustomerID == id);
         }
 
         [HttpGet("customers/search/{term}")]
@@ -79,22 +78,22 @@ namespace NolekAPI.Controllers
         }
 
         // GET: api/CustomersMachinesParts/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CustomersMachinesParts>> GetCustomersMachinesParts(int id)
-        {
-          if (_context.vw_CustomersMachinesParts == null)
-          {
-              return NotFound();
-          }
-            var customersMachinesParts = await _context.vw_CustomersMachinesParts.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<CustomersMachinesParts>> GetCustomersMachinesParts(int id)
+        //{
+        //  if (_context.vw_CustomersMachinesParts == null)
+        //  {
+        //      return NotFound();
+        //  }
+        //    var customersMachinesParts = await _context.vw_CustomersMachinesParts.FindAsync(id);
 
-            if (customersMachinesParts == null)
-            {
-                return NotFound();
-            }
+        //    if (customersMachinesParts == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return customersMachinesParts;
-        }
+        //    return customersMachinesParts;
+        //}
 
         // PUT: api/CustomersMachinesParts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
