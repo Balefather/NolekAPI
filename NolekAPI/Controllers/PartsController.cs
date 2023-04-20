@@ -42,7 +42,6 @@ namespace NolekAPI.Controllers
             {
                 ms.Add(m);
             }
-
             return ms;
         }
         // GET: api/Parts/5

@@ -179,7 +179,7 @@ namespace NolekAPI.Controllers
                                             .Select(machineGroup =>
                                             {
                                                 var machine = machineGroup.First();
-                                                var parts = machineGroup.Select(x => new Part2
+                                                var parts = machineGroup.Select(x => new MachinePart
                                                 {
                                                     PartID = x.PartID,
                                                     PartName = x.PartName,
@@ -227,7 +227,7 @@ namespace NolekAPI.Controllers
                                             .Select(machineGroup =>
                                             {
                                                 var machine = machineGroup.First();
-                                                var parts = machineGroup.Select(x => new Part2
+                                                var parts = machineGroup.Select(x => new MachinePart
                                                 {
                                                     PartID = x.PartID,
                                                     PartName = x.PartName,

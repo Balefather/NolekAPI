@@ -54,12 +54,12 @@ namespace NolekAPI.Controllers
             foreach (var serviceGroup in serviceViewList.GroupBy(x => x.ServiceID))
             {
                 var service = serviceGroup.First();
-                var parts = serviceGroup.Select(x => new ServicePart2
+                var parts = serviceGroup.Select(x => new ServicePart
                 {
                     PartID = x.PartID,
                     PartName = x.PartName ?? "",
                     PartsUsed = x.PartsUsed
-                }).Distinct<ServicePart2>().ToList();
+                }).Distinct<ServicePart>().ToList();
 
                 var images = serviceGroup.Select(y => new Image
                 {

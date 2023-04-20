@@ -62,7 +62,7 @@ namespace NolekAPI.Controllers
         // PUT: api/MachineParts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMachineParts(int id, MachineParts machineParts)
+        public async Task<IActionResult> PutMachineParts(int id, MachineView machineParts)
         {
             if (id != machineParts.MachineID)
             {
@@ -93,7 +93,7 @@ namespace NolekAPI.Controllers
         // POST: api/MachineParts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MachineParts>> PostMachineParts(MachineParts machineParts)
+        public async Task<ActionResult<MachineView>> PostMachineParts(MachineView machineParts)
         {
             if (_context.vw_MachineParts == null)
             {
@@ -130,14 +130,14 @@ namespace NolekAPI.Controllers
             return (_context.vw_MachineParts?.Any(e => e.MachineID == id)).GetValueOrDefault();
         }
 
-        private async Task<ActionResult<IEnumerable<NolekAPI.Model.Machine>>> ToMachines(IEnumerable<MachineParts> machinesPartsList)
+        private async Task<ActionResult<IEnumerable<NolekAPI.Model.Machine>>> ToMachines(IEnumerable<MachineView> machinesPartsList)
         {
             List<NolekAPI.Model.Machine> machinesParts2List = new List<NolekAPI.Model.Machine>();
 
             foreach (var machineGroup in machinesPartsList.GroupBy(x => x.MachineID))
             {
                 var machine = machineGroup.First();
-                var parts = machineGroup.Select(x => new Part2
+                var parts = machineGroup.Select(x => new MachinePart
                 {
                     PartID = x.PartID,
                     PartName = x.PartName,

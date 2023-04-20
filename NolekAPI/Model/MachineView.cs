@@ -2,7 +2,7 @@
 
 namespace NolekAPI.Model
 {
-    public class MachineParts
+    public class MachineView
     {
         public int MachineID { get; set; }
         public string MachineName { get; set; }
