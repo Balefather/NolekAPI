@@ -2,7 +2,7 @@
 
 namespace NolekAPI.Model
 {
-    public class CustomerMachine : MachineDto
+    public class CustomerMachine : Machine
     {
         //Represents a specific machine as seen in the frontend
         public int CustomerID { get; set; }

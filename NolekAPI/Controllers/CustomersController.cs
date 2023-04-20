@@ -201,9 +201,10 @@ namespace NolekAPI.Controllers
                                                     PartPrice = x.PartPrice,
                                                     AmountPartMachine = x.AmountPartMachine,
                                                 }).ToList();
-                                                return new Machine
+                                                return new CustomerMachine
                                                 {
-                                                    MachineID= machine.MachineID,
+                                                    CustomerID = customer.CustomerID,
+                                                    MachineID = machine.MachineID,
                                                     MachineName = machine.MachineName,
                                                     PartsMustChange = machine.PartsMustChange,
                                                     NextService = machine.NextService,
@@ -250,8 +251,9 @@ namespace NolekAPI.Controllers
                                                     PartPrice = x.PartPrice,
                                                     AmountPartMachine = x.AmountPartMachine,
                                                 }).ToList();
-                                                return new Machine
+                                                return new CustomerMachine
                                                 {
+                                                    CustomerID = customer.CustomerID,
                                                     MachineID = machine.MachineID,
                                                     MachineName = machine.MachineName,
                                                     PartsMustChange = machine.PartsMustChange,

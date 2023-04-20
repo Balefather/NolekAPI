@@ -6,7 +6,6 @@ namespace NolekAPI.Model.View
     {
         public int MachineID { get; set; }
         public string MachineName { get; set; }
-        public string PartsUsed { get; set; }
         public string PartsMustChange { get; set; }
         public int ServiceInterval { get; set; }
         public int PartID { get; set; }

@@ -8,8 +8,6 @@ namespace NolekAPI.Model
         public string MachineName { get; set; }
         public string PartsMustChange { get; set; }
         public int ServiceInterval { get; set; }
-        public DateTime NextService { get; set; }
-        public string MachineSerialNumber { get; set; }
         public List<MachinePart> Parts { get; set; }
     }
 }

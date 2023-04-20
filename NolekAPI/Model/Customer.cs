@@ -11,7 +11,7 @@ namespace NolekAPI.Model
         public string CustomerAddress { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
-        public List<Machine> Machines { get; set; }
+        public List<CustomerMachine> Machines { get; set; }
 
     }
 }
