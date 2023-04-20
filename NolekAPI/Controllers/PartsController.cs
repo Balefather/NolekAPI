@@ -32,6 +32,19 @@ namespace NolekAPI.Controllers
             return await _context.tblParts.ToListAsync();
         }
 
+        [HttpGet("ByCustomerID")]
+        public async Task<ActionResult<List<Machine>>> GetPartByCustomerID(int ID)
+        {
+            CustomersMachinesPartsController cmpController = new(_context);
+            Customer cmp = cmpController.GetCustomerByID(ID).Result.Value;
+            List<Machine> ms = new();
+            foreach (var m in cmp.Machines)
+            {
+                ms.Add(m);
+            }
+
+            return ms;
+        }
         // GET: api/Parts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Part>> GettblParts(int id)

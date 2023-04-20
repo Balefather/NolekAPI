@@ -52,6 +52,13 @@ namespace NolekAPI.Controllers
             return await ToCustomers(await _context.vw_CustomersMachinesParts.ToListAsync());
         }
 
+        [Route("CustomerByID")]
+        [HttpGet]
+        public async Task<ActionResult<Customer>> GetCustomerByID(int ID)
+        {
+            return (await GetCustomers()).Value.FirstOrDefault(x => x.CustomerID == ID);
+        }
+
         [HttpGet("customers/search/{term}")]
         public async Task<ActionResult<IEnumerable<Customer>>> Search(string term)
         {
@@ -171,6 +178,54 @@ namespace NolekAPI.Controllers
                                                 return new Machine
                                                 {
                                                     MachineID= machine.MachineID,
+                                                    MachineName = machine.MachineName,
+                                                    PartsMustChange = machine.PartsMustChange,
+                                                    ServiceInterval = machine.ServiceInterval,
+                                                    MachineSerialNumber = machine.MachineSerialNumber,
+                                                    Parts = parts
+                                                };
+                                            }).ToList();
+
+                var customer2 = new Customer
+                {
+                    CustomerID = customer.CustomerID,
+                    CustomerName = customer.CustomerName,
+                    CustomerAddress = customer.CustomerAddress,
+                    PhoneNumber = customer.PhoneNumber,
+                    Email = customer.Email,
+                    Machines = machines
+                };
+
+                customersMachinesParts2List.Add(customer2);
+            }
+
+            return customersMachinesParts2List;
+        }
+
+        private async Task<ActionResult<IEnumerable<NolekAPI.Model.Customer>>> ToCustomers(List<CustomersMachinesParts> CustomersMachinesPartsList)
+        {
+
+            List<Customer> customersMachinesParts2List = new List<Customer>();
+
+            foreach (var customerGroup in CustomersMachinesPartsList.GroupBy(x => x.CustomerID))
+            {
+                var customer = customerGroup.First();
+
+                var machines = customerGroup.GroupBy(x => x.MachineSerialNumber)
+                                            .Select(machineGroup =>
+                                            {
+                                                var machine = machineGroup.First();
+                                                var parts = machineGroup.Select(x => new Part2
+                                                {
+                                                    PartID = x.PartID,
+                                                    PartName = x.PartName,
+                                                    NumberInStock = x.NumberInStock,
+                                                    PartPrice = x.PartPrice,
+                                                    AmountPartMachine = x.AmountPartMachine,
+                                                }).ToList();
+                                                return new Machine
+                                                {
+                                                    MachineID = machine.MachineID,
                                                     MachineName = machine.MachineName,
                                                     PartsMustChange = machine.PartsMustChange,
                                                     ServiceInterval = machine.ServiceInterval,

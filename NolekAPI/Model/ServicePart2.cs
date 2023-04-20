@@ -6,6 +6,8 @@
         public int PartsUsed { get; set; }
         public string PartName { get; set; }
 
+
+
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())
