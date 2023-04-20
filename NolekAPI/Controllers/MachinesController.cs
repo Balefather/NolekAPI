@@ -13,11 +13,11 @@ namespace NolekAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MachinePartsController : ControllerBase
+    public class MachineController : ControllerBase
     {
         private readonly NolekAPIContext _context;
 
-        public MachinePartsController(NolekAPIContext context)
+        public MachineController(NolekAPIContext context)
         {
             _context = context;
         }
