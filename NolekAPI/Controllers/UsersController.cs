@@ -29,61 +29,61 @@ namespace NolekAPI.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet("restricted2")]
-        [Authorize(Roles = "Admin")]
-        public IActionResult GetRestrictedData2()
-        {
-            // Retrieve the user's identity from the JWT token
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity == null)
-            {
-                return Unauthorized();
-            }
+        //[HttpGet("restricted2")]
+        //[Authorize(Roles = "Admin")]
+        //public IActionResult GetRestrictedData2()
+        //{
+        //    // Retrieve the user's identity from the JWT token
+        //    var identity = HttpContext.User.Identity as ClaimsIdentity;
+        //    if (identity == null)
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            // Retrieve the user's role from the JWT token's claims
-            var roleClaim = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-            if (roleClaim == null)
-            {
-                return Unauthorized();
-            }
+        //    // Retrieve the user's role from the JWT token's claims
+        //    var roleClaim = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+        //    if (roleClaim == null)
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            // Check if the user is authorized to access the restricted data
-            if (roleClaim.Value != "Admin")
-            {
-                return Forbid();
-            }
+        //    // Check if the user is authorized to access the restricted data
+        //    if (roleClaim.Value != "Admin")
+        //    {
+        //        return Forbid();
+        //    }
 
-            // Return the restricted data
-            return Ok("This is restricted data that only Admin users can access.");
-        }
+        //    // Return the restricted data
+        //    return Ok("This is restricted data that only Admin users can access.");
+        //}
 
-        [HttpGet("restricted")]
-        [Authorize]
-        public IActionResult GetRestrictedData()
-        {
-            // Retrieve the user's identity from the JWT token
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity == null)
-            {
-                return Unauthorized();
-            }
+        //[HttpGet("restricted")]
+        //[Authorize]
+        //public IActionResult GetRestrictedData()
+        //{
+        //    // Retrieve the user's identity from the JWT token
+        //    var identity = HttpContext.User.Identity as ClaimsIdentity;
+        //    if (identity == null)
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            // Retrieve the user's role from the JWT token's claims
-            var roleClaim = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-            if (roleClaim == null)
-            {
-                return Unauthorized();
-            }
+        //    // Retrieve the user's role from the JWT token's claims
+        //    var roleClaim = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+        //    if (roleClaim == null)
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            // Check if the user is authorized to access the restricted data
-            if (roleClaim.Value != "Admin")
-            {
-                return Forbid();
-            }
+        //    // Check if the user is authorized to access the restricted data
+        //    if (roleClaim.Value != "Admin")
+        //    {
+        //        return Forbid();
+        //    }
 
-            // Return the restricted data
-            return Ok("This is restricted data that only Admin users can access.");
-        }
+        //    // Return the restricted data
+        //    return Ok("This is restricted data that only Admin users can access.");
+        //}
 
         [AllowAnonymous]
         [HttpPost("login")]

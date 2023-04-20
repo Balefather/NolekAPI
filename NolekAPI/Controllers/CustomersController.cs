@@ -98,7 +98,7 @@ namespace NolekAPI.Controllers
         // PUT: api/CustomersMachinesParts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomersMachinesParts(int id, CustomersMachinesParts customersMachinesParts)
+        public async Task<IActionResult> PutCustomersMachinesParts(int id, CustomersView customersMachinesParts)
         {
             if (id != customersMachinesParts.CustomerID)
             {
@@ -129,7 +129,7 @@ namespace NolekAPI.Controllers
         // POST: api/CustomersMachinesParts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CustomersMachinesParts>> PostCustomersMachinesParts(CustomersMachinesParts customersMachinesParts)
+        public async Task<ActionResult<CustomersView>> PostCustomersMachinesParts(CustomersView customersMachinesParts)
         {
           if (_context.vw_CustomersMachinesParts == null)
           {
@@ -166,7 +166,7 @@ namespace NolekAPI.Controllers
             return (_context.vw_CustomersMachinesParts?.Any(e => e.CustomerID == id)).GetValueOrDefault();
         }
 
-        private async Task<ActionResult<IEnumerable<NolekAPI.Model.Customer>>> ToCustomers(IEnumerable<CustomersMachinesParts> CustomersMachinesPartsList)
+        private async Task<ActionResult<IEnumerable<NolekAPI.Model.Customer>>> ToCustomers(IEnumerable<CustomersView> CustomersMachinesPartsList)
         {
 
             List<Customer> customersMachinesParts2List = new List<Customer>();
@@ -214,7 +214,7 @@ namespace NolekAPI.Controllers
             return customersMachinesParts2List;
         }
 
-        private async Task<ActionResult<IEnumerable<NolekAPI.Model.Customer>>> ToCustomers(List<CustomersMachinesParts> CustomersMachinesPartsList)
+        private async Task<ActionResult<IEnumerable<NolekAPI.Model.Customer>>> ToCustomers(List<CustomersView> CustomersMachinesPartsList)
         {
 
             List<Customer> customersMachinesParts2List = new List<Customer>();

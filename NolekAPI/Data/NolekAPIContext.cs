@@ -18,7 +18,7 @@ namespace NolekAPI.Data
 
         public DbSet<NolekAPI.Model.Service> tblServices { get; set; }
         public DbSet<ServiceView> vw_Services { get; set; }
-        public DbSet<NolekAPI.Model.CustomersMachinesParts>? vw_CustomersMachinesParts { get; set; }
+        public DbSet<NolekAPI.Model.CustomersView>? vw_CustomersMachinesParts { get; set; }
 
         public DbSet<NolekAPI.Model.MachineView>? vw_MachineParts { get; set; }
 
@@ -35,8 +35,8 @@ namespace NolekAPI.Data
             modelBuilder.Entity<MachineView>().HasNoKey().ToView("vw_MachineParts");
 
 
-            modelBuilder.Entity<CustomersMachinesParts>().ToView("vw_CustomersMachinesParts");
-            modelBuilder.Entity<CustomersMachinesParts>().HasNoKey().ToView("vw_CustomersMachinesParts");
+            modelBuilder.Entity<CustomersView>().ToView("vw_CustomersMachinesParts");
+            modelBuilder.Entity<CustomersView>().HasNoKey().ToView("vw_CustomersMachinesParts");
             //modelBuilder.Entity<UserRole>().HasNoKey().ToView("tblUserRoles");
             modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserID, ur.RoleID });
             modelBuilder.Entity<ServicePartJunction>().HasKey(sp => new { sp.PartID, sp.ServiceID });

@@ -13,7 +13,7 @@
             }
 
             Image other = (Image)obj;
-            return ImagePath == other.ImagePath;
+            return ImagePath == other.ImagePath && ImageID == other.ImageID;
         }
 
         public override int GetHashCode()
@@ -24,6 +24,7 @@
                 if (ImagePath != null)
                 {
                     hash = hash * 23 + ImagePath.GetHashCode();
+                    hash = hash * 23 + ImageID.GetHashCode();
                 }
                 return hash;
             }

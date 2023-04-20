@@ -2,7 +2,7 @@
 
 namespace NolekAPI.Model
 {
-    public class CustomersMachinesParts
+    public class CustomersView
     {
         
         public int CustomerID { get; set; }
