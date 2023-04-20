@@ -15,11 +15,11 @@ namespace NolekAPI.Controllers
     [EnableCors("AllowAllOrigins")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersMachinesPartsController : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly NolekAPIContext _context;
 
-        public CustomersMachinesPartsController(NolekAPIContext context)
+        public CustomersController(NolekAPIContext context)
         {
             _context = context;
         }
@@ -56,6 +56,19 @@ namespace NolekAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<Customer>> GetCustomerByID(int ID)
         {
+            // This is retarded
+            //if (_context.vw_CustomersMachinesParts == null)
+            //{
+            //    return NotFound();
+            //}
+            //CustomersMachinesParts cmp = (await _context.vw_CustomersMachinesParts.FindAsync(ID)) ?? new();
+            //List<CustomersMachinesParts> listWithOneObjectLmao = new()
+            //{
+            //    cmp
+            //};
+            //IEnumerable<Customer> peepee = ToCustomers(listWithOneObjectLmao).Result.Value;
+            //return peepee.First();
+
             return (await GetCustomers()).Value.FirstOrDefault(x => x.CustomerID == ID);
         }
 

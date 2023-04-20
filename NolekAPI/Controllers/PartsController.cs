@@ -35,7 +35,7 @@ namespace NolekAPI.Controllers
         [HttpGet("ByCustomerID")]
         public async Task<ActionResult<List<Machine>>> GetPartByCustomerID(int ID)
         {
-            CustomersMachinesPartsController cmpController = new(_context);
+            CustomersController cmpController = new(_context);
             Customer cmp = cmpController.GetCustomerByID(ID).Result.Value;
             List<Machine> ms = new();
             foreach (var m in cmp.Machines)
