@@ -1,7 +1,10 @@
-﻿namespace NolekAPI.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NolekAPI.Model.Dto
 {
-    public class Image
+    public class ImageDto
     {
+        [Key]
         public int ImageID { get; set; }
         public string ImagePath { get; set; }
 
@@ -12,7 +15,7 @@
                 return false;
             }
 
-            Image other = (Image)obj;
+            ImageDto other = (ImageDto)obj;
             return ImagePath == other.ImagePath && ImageID == other.ImageID;
         }
 

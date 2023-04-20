@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NolekAPI.Model
+namespace NolekAPI.Model.View
 {
     public class MachineView
     {

@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace NolekAPI.Model
+namespace NolekAPI.Model.Dto.Junction
 {
-    public class ServicePartJunction
+    public class ServicePartJunctionDto
     {
         public int PartID { get; set; }
         public int PartsUsed { get; set; }
-        [Key]
         public int ServiceID { get; set; }
     }
 }

@@ -10,6 +10,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NolekAPI.Data;
 using NolekAPI.Model;
+using NolekAPI.Model.Dto;
+using NolekAPI.Model.Dto.Junction;
+using NolekAPI.Model.View;
 
 namespace NolekAPI.Controllers
 {
@@ -33,7 +36,7 @@ namespace NolekAPI.Controllers
 
         // GET: api/Services
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ServiceViewGrouped>>> GettblServices()
+        public async Task<ActionResult<IEnumerable<Service>>> GetServices()
         {
             //var tblServices = await _context.vw_Services.FromSqlRaw("EXECUTE dbo.sp_GetAllServices").ToListAsync();
             var tblServices = await _context.vw_Services.ToListAsync();
@@ -47,9 +50,9 @@ namespace NolekAPI.Controllers
 
         }
 
-        private async Task<ActionResult<IEnumerable<ServiceViewGrouped>>> FromServiceViewToService(IEnumerable<ServiceView> serviceViewList)
+        private async Task<ActionResult<IEnumerable<NolekAPI.Model.Service>>> FromServiceViewToService(IEnumerable<ServiceView> serviceViewList)
         {
-            List<NolekAPI.Model.ServiceViewGrouped> groupServices = new List<NolekAPI.Model.ServiceViewGrouped>();
+            List<Service> groupServices = new();
 
             foreach (var serviceGroup in serviceViewList.GroupBy(x => x.ServiceID))
             {
@@ -61,12 +64,12 @@ namespace NolekAPI.Controllers
                     PartsUsed = x.PartsUsed
                 }).Distinct<ServicePart>().ToList();
 
-                var images = serviceGroup.Select(y => new Image
+                var images = serviceGroup.Select(y => new ImageDto
                 {
                     ImagePath = y.ImagePath
-                }).Distinct<Image>().ToList();
+                }).Distinct<ImageDto>().ToList();
 
-                groupServices.Add(new NolekAPI.Model.ServiceViewGrouped
+                groupServices.Add(new NolekAPI.Model.Service
                 {
                     ServiceID = service.ServiceID,
                     ServiceDate = service.ServiceDate,
@@ -104,7 +107,7 @@ namespace NolekAPI.Controllers
 
         // GET: api/tblServices/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Service>> GettblServices(int id)
+        public async Task<ActionResult<ServiceDto>> GettblServices(int id)
         {
             var tblServices = await _context.tblServices.FindAsync(id);
 
@@ -118,7 +121,7 @@ namespace NolekAPI.Controllers
         // PUT: api/tblServices/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PuttblServices(int id, Service tblServices)
+        public async Task<IActionResult> PuttblServices(int id, ServiceDto tblServices)
         {
             if (id != tblServices.ServiceID)
             {
@@ -159,9 +162,9 @@ namespace NolekAPI.Controllers
 
         // POST: api/tblServices/CreateNewService
         [HttpPost("CreateNewService")]
-        public async Task<IActionResult> CreateNewService(Service service)
+        public async Task<IActionResult> CreateNewService(ServiceDto service)
         {
-            DateTime serviceDate = DateTime.UtcNow;
+            //DateTime serviceDate = DateTime.UtcNow;
             // Call the stored procedure to create a new service
             //await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus, @PartID, @PartsUsed",
             //new SqlParameter("@ServiceDate", serviceDate),
@@ -176,12 +179,12 @@ namespace NolekAPI.Controllers
             //new SqlParameter("@PartID", service.ServiceParts[0].PartID),
             //new SqlParameter("@PartsUsed", service.ServiceParts[0].PartsUsed)).ToListAsync();
 
-            service.ServiceDate = serviceDate;
+            service.ServiceDate = DateTime.UtcNow;
             _context.tblServices.Add(service);
             await _context.SaveChangesAsync();
 
             ObjectResult createdServiceResult = CreatedAtAction("CreateNewService", new { id = service.ServiceID }, service);
-            Service createdService = (Service)createdServiceResult.Value;
+            ServiceDto createdService = (ServiceDto)createdServiceResult.Value;
 
             if (createdService != null)
             {
@@ -195,6 +198,16 @@ namespace NolekAPI.Controllers
 
             if (createdServiceResult != null)
             {
+                MachinesController mc = new(_context);
+                //DateTime now = DateTime.UtcNow;
+                //DateTime nextService = now.AddMonths((mc.GetCustomerMachine(createdService.MachineSerialNumber).Result.Value.ServiceInterval));
+                CustomerMachineJunctionDto cmj = new CustomerMachineJunctionDto() {
+                    MachineSerialNumber= createdService.MachineSerialNumber,
+                    CustomerID= createdService.CustomerID,
+                    NextService = DateTime.UtcNow.AddMonths((mc.GetCustomerMachine(createdService.MachineSerialNumber).Result.Value.ServiceInterval)),
+
+                };
+                mc.SetNextServiceDate(createdService.MachineSerialNumber, cmj);
                 return Ok();
             }
             return NotFound();

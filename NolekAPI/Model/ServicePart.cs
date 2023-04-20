@@ -1,6 +1,8 @@
-﻿namespace NolekAPI.Model
+﻿using NolekAPI.Model.Dto;
+
+namespace NolekAPI.Model
 {
-    public class ServicePart : Part
+    public class ServicePart : PartDto
     {
         public int PartsUsed { get; set; }
 

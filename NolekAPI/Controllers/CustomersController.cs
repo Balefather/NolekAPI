@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NolekAPI.Data;
 using NolekAPI.Model;
+using NolekAPI.Model.View;
 
 namespace NolekAPI.Controllers
 {
@@ -52,6 +53,20 @@ namespace NolekAPI.Controllers
             return await ToCustomers(await _context.vw_CustomersMachinesParts.ToListAsync());
         }
 
+        [HttpGet("ServiceDate")]
+        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomersSortedByDate()
+        {
+            if (_context.vw_CustomersMachinesParts == null)
+            {
+                return NotFound();
+            }
+            List<Customer> customers = ToCustomers(_context.vw_CustomersMachinesParts).Result.Value
+                 .OrderBy(c => c.Machines.Min(m => m.NextService))
+                 .ToList();
+
+            return customers;
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomerByID(int id)
         {
@@ -74,8 +89,7 @@ namespace NolekAPI.Controllers
         [HttpGet("customers/search/{term}")]
         public async Task<ActionResult<IEnumerable<Customer>>> Search(string term)
         {
-            return await ToCustomers(await _context.vw_CustomersMachinesParts.Where(customer => customer.CustomerName.Contains(term)).ToListAsync());
-        }
+            return await ToCustomers(await _context.vw_CustomersMachinesParts.Where(customer => customer.CustomerName.Contains(term)).ToListAsync());       }
 
         // GET: api/CustomersMachinesParts/5
         //[HttpGet("{id}")]
@@ -192,6 +206,7 @@ namespace NolekAPI.Controllers
                                                     MachineID= machine.MachineID,
                                                     MachineName = machine.MachineName,
                                                     PartsMustChange = machine.PartsMustChange,
+                                                    NextService = machine.NextService,
                                                     ServiceInterval = machine.ServiceInterval,
                                                     MachineSerialNumber = machine.MachineSerialNumber,
                                                     Parts = parts
@@ -240,6 +255,7 @@ namespace NolekAPI.Controllers
                                                     MachineID = machine.MachineID,
                                                     MachineName = machine.MachineName,
                                                     PartsMustChange = machine.PartsMustChange,
+                                                    NextService = machine.NextService,
                                                     ServiceInterval = machine.ServiceInterval,
                                                     MachineSerialNumber = machine.MachineSerialNumber,
                                                     Parts = parts

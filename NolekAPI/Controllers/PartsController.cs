@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NolekAPI.Data;
 using NolekAPI.Model;
+using NolekAPI.Model.Dto;
 
 namespace NolekAPI.Controllers
 {
@@ -27,7 +28,7 @@ namespace NolekAPI.Controllers
 
         // GET: api/Parts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Part>>> GetPart()
+        public async Task<ActionResult<IEnumerable<PartDto>>> GetPart()
         {
             return await _context.tblParts.ToListAsync();
         }
@@ -46,7 +47,7 @@ namespace NolekAPI.Controllers
         }
         // GET: api/Parts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Part>> GettblParts(int id)
+        public async Task<ActionResult<PartDto>> GettblParts(int id)
         {
             var tblParts = await _context.tblParts.FindAsync(id);
 
@@ -59,7 +60,7 @@ namespace NolekAPI.Controllers
         }
 
         [HttpGet("Search/{term}")]
-        public async Task<ActionResult<IEnumerable<Part>>> Search(string term)
+        public async Task<ActionResult<IEnumerable<PartDto>>> Search(string term)
         {
             return await _context.tblParts.Where(tblParts => tblParts.PartName.Contains(term)).ToListAsync();
         }
@@ -67,7 +68,7 @@ namespace NolekAPI.Controllers
         // PUT: api/Parts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PuttblParts(int id, Part tblParts)
+        public async Task<IActionResult> PuttblParts(int id, PartDto tblParts)
         {
             if (id != tblParts.PartID)
             {
@@ -99,7 +100,7 @@ namespace NolekAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [EnableCors("AllowAllOrigins")]
         [HttpPost]
-        public async Task<ActionResult<Part>> PosttblParts(Part tblParts)
+        public async Task<ActionResult<PartDto>> PosttblParts(PartDto tblParts)
         {
             _context.tblParts.Add(tblParts);
             await _context.SaveChangesAsync();

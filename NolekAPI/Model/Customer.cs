@@ -4,6 +4,7 @@ namespace NolekAPI.Model
 {
     public class Customer
     {
+        //Represents a customer as we want to be seen in the front-end
         [Key]
         public int CustomerID { get; set; }
         public string CustomerName { get; set; }

@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NolekAPI.Data;
 using NolekAPI.Model;
+using NolekAPI.Model.Dto;
+using NolekAPI.Model.Dto.Junction;
 using NuGet.Packaging.Signing;
 
 namespace NolekAPI.Controllers
@@ -139,7 +141,7 @@ namespace NolekAPI.Controllers
                 //probably log this failed, somehow.
                 return roleNames;
             }
-            List<UserRole> userRoles = _context.tblUserRoles.Where(u => u.UserID.Equals(userID)).ToList();
+            List<UserRoleJunctionDto> userRoles = _context.tblUserRoles.Where(u => u.UserID.Equals(userID)).ToList();
 
             if (!userRoles.Any())
             {
@@ -213,7 +215,7 @@ namespace NolekAPI.Controllers
             //    return NotFound();
             //}
 
-            UserRole userRole = new() { RoleID = role.RoleID, UserID = userid };
+            UserRoleJunctionDto userRole = new() { RoleID = role.RoleID, UserID = userid };
             if (!_context.tblUserRoles.Contains(userRole))
             {
                 _context.tblUserRoles.Add(userRole);
@@ -227,7 +229,7 @@ namespace NolekAPI.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
             if (_context.tblUsers == null)
             {
@@ -237,7 +239,7 @@ namespace NolekAPI.Controllers
         }
         // GET: api/Users
         [HttpGet("Roles")]
-        public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
+        public async Task<ActionResult<IEnumerable<RoleDto>>> GetRoles()
         {
             if (_context.tblRoles == null)
             {
@@ -248,7 +250,7 @@ namespace NolekAPI.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<UserDto>> GetUser(int id)
         {
             if (_context.tblUsers == null)
             {
@@ -267,7 +269,7 @@ namespace NolekAPI.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutUser(int id, UserDto user)
         {
             if (id != user.UserID)
             {
@@ -298,7 +300,7 @@ namespace NolekAPI.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<UserDto>> PostUser(UserDto user)
         {
             if (_context.tblUsers == null)
             {

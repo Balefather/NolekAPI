@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NolekAPI.Model;
+using NolekAPI.Model.Dto;
+using NolekAPI.Model.Dto.Junction;
+using NolekAPI.Model.View;
 
 namespace NolekAPI.Data
 {
@@ -13,41 +16,58 @@ namespace NolekAPI.Data
             : base(options)
         {
         }
+        //tables
+        public DbSet<PartDto> tblParts { get; set; } = default!;
+        public DbSet<MachineDto> tblMachines { get; set; }
+        public DbSet<MachineSerialNumbersDto> tblMachineSerialNumbers { get; set; }
+        public DbSet<ImageDto> tblImages { get; set; }
 
-        public DbSet<NolekAPI.Model.Part> tblParts { get; set; } = default!;
+        public DbSet<ServiceImageJunctionDto> tblServices_Images { get; set; }
 
-        public DbSet<NolekAPI.Model.Service> tblServices { get; set; }
+        public DbSet<CustomerMachineJunctionDto> tblCustomers_Machines { get; set; }
+
+        public DbSet<ServiceDto> tblServices { get; set; }
+
+        public DbSet<UserDto>? tblUsers { get; set; }
+
+        public DbSet<RoleDto>? tblRoles { get; set; }
+
+        public DbSet<UserRoleJunctionDto>? tblUserRoles { get; set; }
+
+        public DbSet<ServicePartJunctionDto>? tblServices_Parts { get; set; }
+
+        //Views
         public DbSet<ServiceView> vw_Services { get; set; }
-        public DbSet<NolekAPI.Model.CustomersView>? vw_CustomersMachinesParts { get; set; }
+        public DbSet<CustomersView>? vw_CustomersMachinesParts { get; set; }
 
-        public DbSet<NolekAPI.Model.MachineView>? vw_MachineParts { get; set; }
+        public DbSet<MachineView>? vw_MachineParts { get; set; }
 
-        public DbSet<NolekAPI.Model.ServicePartJunction>? tblServices_Parts { get; set; }
 
-        public DbSet<Invoice> Invoice { get; set; }
+
+        //what
+
+        public DbSet<Invoice> Invoice { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ServiceView>().ToView("vw_Services");
+            //tables
+
+            //junctions
+            modelBuilder.Entity<UserRoleJunctionDto>().HasKey(ur => new { ur.UserID, ur.RoleID });
+            modelBuilder.Entity<ServicePartJunctionDto>().HasKey(sp => new { sp.PartID, sp.ServiceID });
+            modelBuilder.Entity<ServiceImageJunctionDto>().HasKey(si => new { si.ImageID, si.ServiceID });
+
+            //views
             modelBuilder.Entity<ServiceView>().HasNoKey().ToView("vw_Services");
-
-            modelBuilder.Entity<MachineView>().ToView("vw_MachineParts");
             modelBuilder.Entity<MachineView>().HasNoKey().ToView("vw_MachineParts");
-
-
-            modelBuilder.Entity<CustomersView>().ToView("vw_CustomersMachinesParts");
             modelBuilder.Entity<CustomersView>().HasNoKey().ToView("vw_CustomersMachinesParts");
-            //modelBuilder.Entity<UserRole>().HasNoKey().ToView("tblUserRoles");
-            modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserID, ur.RoleID });
-            modelBuilder.Entity<ServicePartJunction>().HasKey(sp => new { sp.PartID, sp.ServiceID });
-            //modelBuilder.Entity<Service>().HasKey(sp => new { sp.ServiceID });
-            //modelBuilder.Entity<Customer>().ToView("vw_CustomersMachinesParts");
+
+
+            //mysteries
             modelBuilder.Entity<Invoice>().HasNoKey().ToView(null);
         }
 
-        public DbSet<NolekAPI.Model.User>? tblUsers { get; set; }
-        public DbSet<NolekAPI.Model.UserRole>? tblUserRoles { get; set; }
-        public DbSet<NolekAPI.Model.Role>? tblRoles { get; set; }
+
 
     }
 }

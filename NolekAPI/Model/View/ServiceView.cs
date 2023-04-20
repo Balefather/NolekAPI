@@ -1,17 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-namespace NolekAPI.Model
+
+namespace NolekAPI.Model.View
 {
-    public class ServiceViewGrouped
+    public class ServiceView
     {
-        [Key]
         public int ServiceID { get; set; }
         public DateTime ServiceDate { get; set; }
         public string CustomerName { get; set; }
         public string MachineName { get; set; }
         public string MachineSerialNumber { get; set; }
-        public List<ServicePart> Parts { get; set; }
-        public List<Image> Images { get; set; }
+        public int PartsUsed { get; set; }
+        public int PartID { get; set; }
+        public string PartName { get; set; }
         public int TransportTimeUsed { get; set; }
         public int TransportKmUsed { get; set; }
         public int WorkTimeUsed { get; set; }

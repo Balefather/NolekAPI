@@ -1,0 +1,6 @@
+﻿ModelDto - Models which are responsible for transfering data to and from the database must be marked Dto
+ModelView - Models whichare responsible for receiving data from a view must be marked as View
+ModelJunction  - Models which are responsible for connecting models with other models must be marked Junction
+
+Models which are constructed from the models above must be named something that makes 
+it clearly under what it represents

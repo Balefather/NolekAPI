@@ -1,7 +1,10 @@
-﻿namespace NolekAPI.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NolekAPI.Model.Dto
 {
-    public class User
+    public class UserDto
     {
+        [Key]
         public int UserID { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }

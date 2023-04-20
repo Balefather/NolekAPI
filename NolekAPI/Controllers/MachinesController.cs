@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NolekAPI.Data;
 using NolekAPI.Model;
+using NolekAPI.Model.Dto;
+using NolekAPI.Model.Dto.Junction;
+using NolekAPI.Model.View;
 
 namespace NolekAPI.Controllers
 {
@@ -35,7 +38,7 @@ namespace NolekAPI.Controllers
 
         // GET: api/MachineParts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<NolekAPI.Model.Machine>> GetMachineParts(int id)
+        public async Task<ActionResult<NolekAPI.Model.Machine>> GetMachine(int id)
         {
             if (_context.vw_MachineParts == null)
             {
@@ -52,6 +55,38 @@ namespace NolekAPI.Controllers
 
             return machines.First();
         }
+
+        // GET: api/MachineParts/5
+        [HttpGet("CustomerMachine/{id}")]
+        public async Task<ActionResult<NolekAPI.Model.CustomerMachine>> GetCustomerMachine(string serialNumber)
+        {
+            if (_context.vw_MachineParts == null)
+            {
+                return NotFound();
+            }
+            //Get customermachines
+            var customerMachineJunction = _context.tblCustomers_Machines.Where(machine => machine.MachineSerialNumber == serialNumber).First();
+            // Join customermachines on serialnumber to get machineID
+            var machineSerialNumbers = _context.tblMachineSerialNumbers.Where(m => m.MachineSerialNumber == serialNumber).First();
+            // Get Machines
+            var machine = _context.tblMachines.Where(machine => machine.MachineID == machineSerialNumbers.MachineID).First();
+
+            CustomerMachine cm = new()
+            {
+                CustomerID = customerMachineJunction.CustomerID,
+                MachineID = machine.MachineID,
+                MachineName = machine.MachineName,
+                PartsMustChange = machine.PartsMustChange,
+                ServiceInterval = machine.ServiceInterval,
+                MachineSerialNumber = serialNumber
+
+            };
+
+
+            return cm;
+        }
+
+
 
         [HttpGet("search/{term}")]
         public async Task<ActionResult<IEnumerable<NolekAPI.Model.Machine>>> Search(string term)
@@ -130,6 +165,11 @@ namespace NolekAPI.Controllers
             return (_context.vw_MachineParts?.Any(e => e.MachineID == id)).GetValueOrDefault();
         }
 
+        private bool CustomerMachineJunctionExists(string serialNumber)
+        {
+            return (_context.tblCustomers_Machines?.Any(e => e.MachineSerialNumber == serialNumber)).GetValueOrDefault();
+        }
+
         private async Task<ActionResult<IEnumerable<NolekAPI.Model.Machine>>> ToMachines(IEnumerable<MachineView> machinesPartsList)
         {
             List<NolekAPI.Model.Machine> machinesParts2List = new List<NolekAPI.Model.Machine>();
@@ -155,6 +195,35 @@ namespace NolekAPI.Controllers
                 });
             }
             return machinesParts2List;
+        }
+
+        [HttpGet("GoAway")]
+        public async Task<IActionResult> SetNextServiceDate(string serialNumber, CustomerMachineJunctionDto cmj)
+        {
+            var existingEntity = await _context.tblCustomers_Machines.FindAsync(serialNumber);
+            if (existingEntity != null)
+            {
+                _context.Entry(existingEntity).State = EntityState.Detached;
+            }
+            _context.Entry(cmj).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CustomerMachineJunctionExists(serialNumber))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         //private async Task<ActionResult<NolekAPI.Model.Machine>> ToMachine(MachineParts machinesPartsList)

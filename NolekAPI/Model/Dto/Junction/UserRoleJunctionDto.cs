@@ -1,6 +1,6 @@
-﻿namespace NolekAPI.Model
+﻿namespace NolekAPI.Model.Dto.Junction
 {
-    public class UserRole
+    public class UserRoleJunctionDto
     {
         public int UserID { get; set; }
         public int RoleID { get; set; }

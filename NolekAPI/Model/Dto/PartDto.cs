@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-namespace NolekAPI.Model
+namespace NolekAPI.Model.Dto
 {
-    public class Part
+    public class PartDto
     {
 
         [Key]
