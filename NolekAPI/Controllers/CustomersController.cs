@@ -53,7 +53,7 @@ namespace NolekAPI.Controllers
             return await ToCustomers(await _context.vw_CustomersMachinesParts.ToListAsync());
         }
 
-        [HttpGet("ServiceDate")]
+        [HttpGet("SortedByServiceDate")]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomersSortedByDate()
         {
             if (_context.vw_CustomersMachinesParts == null)
@@ -70,19 +70,6 @@ namespace NolekAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomerByID(int id)
         {
-            // This is retarded
-            //if (_context.vw_CustomersMachinesParts == null)
-            //{
-            //    return NotFound();
-            //}
-            //CustomersMachinesParts cmp = (await _context.vw_CustomersMachinesParts.FindAsync(ID)) ?? new();
-            //List<CustomersMachinesParts> listWithOneObjectLmao = new()
-            //{
-            //    cmp
-            //};
-            //IEnumerable<Customer> peepee = ToCustomers(listWithOneObjectLmao).Result.Value;
-            //return peepee.First();
-
             return (await GetCustomers()).Value.FirstOrDefault(x => x.CustomerID == id);
         }
 
