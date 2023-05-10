@@ -107,15 +107,44 @@ namespace NolekAPI.Controllers
 
         // GET: api/tblServices/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceDto>> GettblServices(int id)
+        public async Task<ActionResult<Service>> GettblServices(int id)
         {
-            var tblServices = await _context.tblServices.FindAsync(id);
+            var tblServices = GetServices().Result.Value.ToList().First(x => x.ServiceID == id);
 
             if (tblServices == null)
             {
                 return NotFound();
             }
             return tblServices;
+        }
+
+        // GET: api/tblServices/5
+        [HttpGet("ImagesByServiceID/{id}")]
+        public async Task<ActionResult<List<ImageDto>>> GetServiceImages(int id)
+        {
+            var serviceImages = _context.tblServices_Images.Where(x => x.ServiceID == id).ToList();
+            var images = _context.tblImages.ToList();
+
+            List<ImageDto> result = new List<ImageDto>();
+            foreach (var serviceImage in serviceImages)
+            {
+                foreach (var image in images)
+                {
+                    if (image.ImageID == serviceImage.ImageID)
+                    {
+                        result.Add(image);
+                    }
+                }
+
+
+            }
+
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return result;
         }
 
         // PUT: api/tblServices/5
