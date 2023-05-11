@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -16,6 +17,7 @@ using NolekAPI.Model.View;
 
 namespace NolekAPI.Controllers
 {
+    [EnableCors("AllowAllOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class ServicesController : ControllerBase
@@ -193,21 +195,6 @@ namespace NolekAPI.Controllers
         [HttpPost("CreateNewService")]
         public async Task<IActionResult> CreateNewService(ServiceDto service)
         {
-            //DateTime serviceDate = DateTime.UtcNow;
-            // Call the stored procedure to create a new service
-            //await _context.tblServices.FromSqlRaw("EXECUTE dbo.CreateNewService @ServiceDate, @TransportTimeUsed, @TransportKmUsed, @WorkTimeUsed, @MachineID, @CustomerID, @MachineSerialNumber, @Note, @MachineStatus, @PartID, @PartsUsed",
-            //new SqlParameter("@ServiceDate", serviceDate),
-            //new SqlParameter("@TransportTimeUsed", service.TransportTimeUsed),
-            //new SqlParameter("@TransportKmUsed", service.TransportKmUsed),
-            //new SqlParameter("@WorkTimeUsed", service.WorkTimeUsed),
-            //new SqlParameter("@MachineID", service.MachineID),
-            //new SqlParameter("@CustomerID", service.CustomerID),
-            //new SqlParameter("@MachineSerialNumber", service.MachineSerialNumber),
-            //new SqlParameter("@Note", service.Note),
-            //new SqlParameter("@MachineStatus", service.MachineStatus),
-            //new SqlParameter("@PartID", service.ServiceParts[0].PartID),
-            //new SqlParameter("@PartsUsed", service.ServiceParts[0].PartsUsed)).ToListAsync();
-
             service.ServiceDate = DateTime.UtcNow;
             _context.tblServices.Add(service);
             await _context.SaveChangesAsync();
@@ -237,7 +224,8 @@ namespace NolekAPI.Controllers
 
                 };
                 mc.SetNextServiceDate(createdService.MachineSerialNumber, cmj);
-                return Ok();
+                //return Ok();
+                return CreatedAtAction("GettblServices", new { id = service.ServiceID }, service);
             }
             return NotFound();
         }
