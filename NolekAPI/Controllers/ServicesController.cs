@@ -234,13 +234,32 @@ namespace NolekAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletetblServices(int id)
         {
-            var tblServices = await _context.tblServices.FindAsync(id);
-            if (tblServices == null)
+            var service = await _context.tblServices.FindAsync(id);
+            if (service == null)
             {
                 return NotFound();
             }
 
-            _context.tblServices.Remove(tblServices);
+            //remove serviceparts
+
+            var serviceParts = _context.tblServices_Parts.Where(x => x.ServiceID == id);
+            foreach (var item in serviceParts)
+            {
+                _context.tblServices_Parts.Remove(item);
+                await _context.SaveChangesAsync();
+            }
+
+            //remove serviceimages
+
+            var serviceImages = _context.tblServices_Images.Where(x => x.ServiceID == id);
+            foreach (var item in serviceImages)
+            {
+                _context.tblServices_Images.Remove(item);
+                await _context.SaveChangesAsync();
+            }
+
+            //finally, remove the service
+            _context.tblServices.Remove(service);
             await _context.SaveChangesAsync();
 
             return NoContent();
