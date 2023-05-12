@@ -242,7 +242,7 @@ namespace NolekAPI.Controllers
 
             //remove serviceparts
 
-            var serviceParts = _context.tblServices_Parts.Where(x => x.ServiceID == id);
+            var serviceParts = _context.tblServices_Parts.Where(x => x.ServiceID == id).ToList();
             foreach (var item in serviceParts)
             {
                 _context.tblServices_Parts.Remove(item);
@@ -251,7 +251,7 @@ namespace NolekAPI.Controllers
 
             //remove serviceimages
 
-            var serviceImages = _context.tblServices_Images.Where(x => x.ServiceID == id);
+            var serviceImages = _context.tblServices_Images.Where(x => x.ServiceID == id).ToList();
             foreach (var item in serviceImages)
             {
                 _context.tblServices_Images.Remove(item);
