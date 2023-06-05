@@ -195,6 +195,7 @@ namespace NolekAPI.Controllers
         [HttpPost("CreateNewService")]
         public async Task<IActionResult> CreateNewService(ServiceDto service)
         {
+
             service.ServiceDate = DateTime.UtcNow;
             _context.tblServices.Add(service);
             await _context.SaveChangesAsync();
@@ -204,6 +205,15 @@ namespace NolekAPI.Controllers
 
             if (createdService != null)
             {
+                if (service.ServiceParts == null || service.ServiceParts.Count == 0)
+                {
+                    var sp = new ServicePartJunctionDto()
+                    {
+                        ServiceID = 0,
+                        PartID = _context.tblParts.First().PartID,
+                        PartsUsed = 999
+                    };
+                }
                 foreach (var servicePart in service.ServiceParts)
                 {
                     servicePart.ServiceID = createdService.ServiceID;

@@ -130,16 +130,29 @@ namespace NolekAPI.Controllers
         // POST: api/MachineParts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MachineView>> PostMachineParts(MachineView machineParts)
+        public async Task<ActionResult<MachineView>> PostMachineParts(MachineDto machine)
         {
-            if (_context.vw_MachineParts == null)
+            if (_context.tblMachines == null)
             {
                 return Problem("Entity set 'NolekAPIContext.MachineParts'  is null.");
             }
-            _context.vw_MachineParts.Add(machineParts);
+            _context.tblMachines.Add(machine);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMachineParts", new { id = machineParts.MachineID }, machineParts);
+            ObjectResult createdMachineResult = CreatedAtAction("PostMachineParts", new { id = machine.MachineID }, machine);
+            MachineDto createdMachine = (MachineDto)createdMachineResult.Value;
+
+            var mp = new MachinePartJunctionDto()
+            {
+                MachineID = createdMachine.MachineID,
+                PartID = _context.tblParts.First().PartID,
+                AmountPartMachine = 999
+            };
+
+            _context.tblMachines_Parts.Add(mp);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetMachine", new { id = machine.MachineID }, machine);
         }
 
         // DELETE: api/MachineParts/5
@@ -150,13 +163,21 @@ namespace NolekAPI.Controllers
             {
                 return NotFound();
             }
-            var machineParts = await _context.vw_MachineParts.FindAsync(id);
-            if (machineParts == null)
+            var machinePartsJunction = await _context.tblMachines_Parts.FindAsync(id);
+            if (machinePartsJunction == null)
             {
                 return NotFound();
             }
+            _context.tblMachines_Parts.Remove(machinePartsJunction);
+            await _context.SaveChangesAsync();
 
-            _context.vw_MachineParts.Remove(machineParts);
+            var machine = await _context.tblMachines.FindAsync(id);
+            if (machine == null)
+            {
+                return NotFound();
+            }
+            _context.tblMachines.Remove(machine);
+
             await _context.SaveChangesAsync();
 
             return NoContent();

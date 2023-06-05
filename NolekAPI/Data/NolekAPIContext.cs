@@ -24,6 +24,8 @@ namespace NolekAPI.Data
 
         public DbSet<ServiceImageJunctionDto> tblServices_Images { get; set; }
 
+        public DbSet<MachinePartJunctionDto> tblMachines_Parts{ get; set; }
+
         public DbSet<CustomerMachineJunctionDto> tblCustomers_Machines { get; set; }
 
         public DbSet<ServiceDto> tblServices { get; set; }
@@ -56,6 +58,7 @@ namespace NolekAPI.Data
             modelBuilder.Entity<UserRoleJunctionDto>().HasKey(ur => new { ur.UserID, ur.RoleID });
             modelBuilder.Entity<ServicePartJunctionDto>().HasKey(sp => new { sp.PartID, sp.ServiceID });
             modelBuilder.Entity<ServiceImageJunctionDto>().HasKey(si => new { si.ImageID, si.ServiceID });
+            modelBuilder.Entity<MachinePartJunctionDto>().HasKey(si => new { si.MachineID});
 
             //views
             modelBuilder.Entity<ServiceView>().HasNoKey().ToView("vw_Services");

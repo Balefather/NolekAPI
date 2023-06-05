@@ -73,10 +73,11 @@ namespace NolekAPI.Controllers
             return (await GetCustomers()).Value.FirstOrDefault(x => x.CustomerID == id);
         }
 
-        [HttpGet("customers/search/{term}")]
+        [HttpGet("search/{term}")]
         public async Task<ActionResult<IEnumerable<Customer>>> Search(string term)
         {
-            return await ToCustomers(await _context.vw_CustomersMachinesParts.Where(customer => customer.CustomerName.Contains(term)).ToListAsync());       }
+            return await ToCustomers(await _context.vw_CustomersMachinesParts.Where(customer => customer.CustomerName.Contains(term)).ToListAsync());       
+        }
 
         // GET: api/CustomersMachinesParts/5
         //[HttpGet("{id}")]
